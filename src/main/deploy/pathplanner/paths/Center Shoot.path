@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.534450784593438,
+        "x": 3.4826961483594863,
         "y": 4.054407988587732
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.7935849294352817,
+        "x": 3.74183029320133,
         "y": 4.0580261667645825
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Center Start"
     },
     {
       "anchor": {
@@ -25,13 +25,20 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Center Shot"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,

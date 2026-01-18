@@ -43,6 +43,14 @@ public class ShootIntake extends SubsystemBase {
     intakeShooter.set(0);
   }
 
+  public void feedShooter(double volts) {
+    feeder.setVoltage(volts);
+  }
+
+  public void stopFeeder() {
+    feeder.set(0);
+  }
+
   private void SmartDashboardUpdate() {
     SmartDashboard.putNumber(
         "FlyWheel RPM", gearRatio * intakeShooter.getVelocity().getValueAsDouble());

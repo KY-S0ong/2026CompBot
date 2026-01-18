@@ -4,11 +4,22 @@
 
 package frc.robot.subsystems.structures;
 
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
 
-  public Climber() {}
+  private SparkMax c1Motor = new SparkMax(40, MotorType.kBrushless);
+  private SparkMax c2Motor = new SparkMax(41, MotorType.kBrushless);
+  
+  public Climber() {
+    c1Motor.setInverted(false);
+    c2Motor.setInverted(true);
+
+    
+  }
 
   @Override
   public void periodic() {

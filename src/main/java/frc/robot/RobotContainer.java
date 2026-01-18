@@ -8,6 +8,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -19,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.ShootCommands;
 import frc.robot.commands.testShoot;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -189,11 +192,11 @@ public class RobotContainer {
   }
 
   private void shootBindings() {
-    new JoystickButton(LdriveJoystick, 1).whileTrue(new testShoot(shootIntake));
+    new JoystickButton(LdriveJoystick, 1).whileTrue(ShootCommands.rampFlyWheel(shootIntake, .5));
   }
 
   private void autoNamedCommands() {
-    // NamedCommands.registerCommand("launchSequence", insert);
+    NamedCommands.registerCommand("launchSequence", ShootCommands.autolaunchSequence(shootIntake));
   }
 
   /**

@@ -13,19 +13,55 @@ import frc.robot.subsystems.structures.ShootIntake;
 /** Add your docs here. */
 public class ShootCommands {
 
-  private ShootCommands() {}
+    private ShootCommands() {
+    }
 
-  private Command rampFlyWheel(ShootIntake shootIntake) {
-    return Commands.run(() -> shootIntake.rampFlyWheel(0.5), shootIntake);
-  }
-  private Command stopFlyWheel(ShootIntake shootIntake){
-    return Commands.run(()-> shootIntake.stopFlyWheel(), shootIntake);
-  }
+    public static Command rampFlyWheel(ShootIntake shootIntake, double volts) {
+        return Commands.run(() -> shootIntake.rampFlyWheel(volts), shootIntake)
+                .handleInterrupt(() -> shootIntake.stopFlyWheel());
+}
 
-  public Command launchSequence(ShootIntake shootIntake) {
-    return new SequentialCommandGroup(
-        rampFlyWheel(shootIntake).withTimeout(7),
-        stopFlyWheel(shootIntake).withTimeout(5)
-    );
-  }
+    public static Command feed(ShootIntake shootIntake) {
+        return Commands.run(() -> shootIntake.feedShooter(6), shootIntake)
+                .handleInterrupt(() -> shootIntake.stopFeeder());
+    }
+
+    public static Command intake(ShootIntake shootIntake) {
+        return new ParallelCommandGroup(
+                Commands.run(() -> shootIntake.rampFlyWheel(-3), shootIntake)
+                        .handleInterrupt(() -> shootIntake.stopFlyWheel()),
+                Commands.run(() -> shootIntake.feedShooter(6), shootIntake)
+                        .handleInterrupt(() -> shootIntake.stopFeeder()));
+    }
+
+    public static Command extake(ShootIntake shootIntake) {
+        return new ParallelCommandGroup(
+                Commands.run(() -> shootIntake.rampFlyWheel(-3), shootIntake)
+                        .handleInterrupt(() -> shootIntake.stopFlyWheel()),
+                Commands.run(() -> shootIntake.feedShooter(-6), shootIntake)
+                        .handleInterrupt(() -> shootIntake.stopFeeder()));
+    }
+
+    public static Command pass(ShootIntake shootIntake) {
+        return new ParallelCommandGroup(
+                Commands.run(() -> shootIntake.rampFlyWheel(6), shootIntake)
+                        .handleInterrupt(() -> shootIntake.stopFlyWheel()),
+                Commands.run(() -> shootIntake.feedShooter(-12), shootIntake)
+                        .handleInterrupt(() -> shootIntake.stopFeeder()));
+    }
+
+    public static Command launchSequence(ShootIntake shootIntake) {
+        return new SequentialCommandGroup(
+                rampFlyWheel(shootIntake, 12).withTimeout(1),
+                feed(shootIntake)
+                        .handleInterrupt(() -> shootIntake.stopFeeder())
+                        .alongWith(rampFlyWheel(shootIntake, 12)
+                                .handleInterrupt(() -> shootIntake.stopFlyWheel())));
+    }
+
+    public static Command autolaunchSequence(ShootIntake shootIntake) {
+        return new SequentialCommandGroup(
+                rampFlyWheel(shootIntake, 12).withTimeout(.5),
+                feed(shootIntake).withTimeout(5.5).alongWith(rampFlyWheel(shootIntake, 12).withTimeout(5.5)));
+    }
 }
