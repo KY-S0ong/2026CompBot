@@ -21,6 +21,12 @@
           "data": {
             "pathName": "Center Field Intake"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launchSequence"
+          }
         }
       ]
     }

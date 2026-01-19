@@ -1,6 +1,6 @@
 // Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
-//
+// Modified by FRC 3958
 // Use of this source code is governed by a BSD
 // license that can be found in the LICENSE file
 // at the root directory of this project.
@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -171,6 +172,9 @@ public class Drive extends SubsystemBase {
       addVisionMeasurement(
           LimelightHelpers.getBotPose2d("dalight"), Timer.getFPGATimestamp(), null);
     }
+
+    SmartDashboard.putNumber("Shot Angle", getShotAngle(() -> getPose()));
+    SmartDashboard.putNumber("Shot Distance", getShotDistance().in(Units.Meters));
 
     // Stop moving when disabled
     if (DriverStation.isDisabled()) {

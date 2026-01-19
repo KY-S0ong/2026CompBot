@@ -1,6 +1,6 @@
 // Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
-//
+// Modified by FRC 3958
 // Use of this source code is governed by a BSD
 // license that can be found in the LICENSE file
 // at the root directory of this project.
@@ -9,7 +9,6 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -22,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ShootCommands;
-import frc.robot.commands.testShoot;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -163,6 +161,8 @@ public class RobotContainer {
                 () -> -LdriveJoystick.getX(),
                 () -> -RdriveJoystick.getX(),
                 () -> false));
+
+    // Hub-relative drive when RB is held
     new JoystickButton(LdriveJoystick, 2)
         .whileTrue(
             DriveCommands.joystickHubDrive(
@@ -170,14 +170,23 @@ public class RobotContainer {
                 () -> -LdriveJoystick.getY(),
                 () -> -LdriveJoystick.getX(),
                 () -> drive.getPose()));
+
     // Lock to 0° when A button is held
-    new JoystickButton(RdriveJoystick, 2)
+    new JoystickButton(RdriveJoystick, 3)
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
                 () -> -LdriveJoystick.getY(),
                 () -> -LdriveJoystick.getX(),
                 () -> Rotation2d.kZero));
+    // Lock to 180° when A button is held
+    new JoystickButton(RdriveJoystick, 4)
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -LdriveJoystick.getY(),
+                () -> -LdriveJoystick.getX(),
+                () -> Rotation2d.k180deg));
     // Switch to X pattern when X button is pressed
     new JoystickButton(RdriveJoystick, 4).onTrue(Commands.runOnce(drive::stopWithX, drive));
     // Reset gyro to 0° when B button is pressed
@@ -193,6 +202,7 @@ public class RobotContainer {
 
   private void shootBindings() {
     new JoystickButton(LdriveJoystick, 1).whileTrue(ShootCommands.rampFlyWheel(shootIntake, .5));
+    new JoystickButton(RdriveJoystick, 1).whileTrue(ShootCommands.intake(shootIntake));
   }
 
   private void autoNamedCommands() {
