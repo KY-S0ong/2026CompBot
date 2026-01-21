@@ -395,9 +395,9 @@ public class Drive extends SubsystemBase {
     Pose2d hubPose = DriveConstants.getHubPose().toPose2d();
     Pose2d drivePose = poseSupplier.get();
     double desiredAngle =
-        StrictMath.atan2(hubPose.getX() - drivePose.getX(), hubPose.getY() - drivePose.getY());
+        StrictMath.atan2(hubPose.getY() - drivePose.getY(), hubPose.getX() - drivePose.getX());
 
-    desiredAngle = edu.wpi.first.math.util.Units.radiansToDegrees(desiredAngle) + 180;
+    // desiredAngle = edu.wpi.first.math.util.Units.radiansToDegrees(desiredAngle);
     return desiredAngle;
   }
 }

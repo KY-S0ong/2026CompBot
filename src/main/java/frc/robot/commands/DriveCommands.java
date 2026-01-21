@@ -33,7 +33,7 @@ import java.util.function.Supplier;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.05;
-  private static final double ANGLE_KP = 5.0;
+  private static final double ANGLE_KP = 9.25;
   private static final double ANGLE_KD = 0.4;
   private static final double ANGLE_MAX_VELOCITY = 8.0;
   private static final double ANGLE_MAX_ACCELERATION = 20.0;
@@ -200,9 +200,10 @@ public class DriveCommands {
                   getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
 
               // Calculate angular speed
+
+              double desiredRad = drive.getShotAngle(pose2dSupplier);
               double omega =
-                  angleController.calculate(
-                      drive.getRotation().getDegrees(), drive.getShotAngle(pose2dSupplier));
+                  angleController.calculate(drive.getRotation().getRadians(), desiredRad);
 
               // Convert to field relative speeds & send command
               ChassisSpeeds speeds =

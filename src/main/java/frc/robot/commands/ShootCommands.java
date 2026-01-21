@@ -14,7 +14,7 @@ import frc.robot.subsystems.structures.ShootIntake;
 public class ShootCommands {
 
   private ShootCommands() {}
-
+  // fix parrell commands
   public static Command rampFlyWheel(ShootIntake shootIntake, double volts) {
     return Commands.run(() -> shootIntake.rampFlyWheel(volts), shootIntake)
         .handleInterrupt(() -> shootIntake.stopFlyWheel());
@@ -26,9 +26,8 @@ public class ShootCommands {
   }
 
   public static Command intake(ShootIntake shootIntake) {
-    return new ParallelCommandGroup(
-        Commands.run(() -> shootIntake.rampFlyWheel(-3), shootIntake)
-            .handleInterrupt(() -> shootIntake.stopFlyWheel()),
+    return Commands.run(() -> shootIntake.rampFlyWheel(-3), shootIntake)
+            .handleInterrupt(() -> shootIntake.stopFlyWheel()).alongWith(
         Commands.run(() -> shootIntake.feedShooter(6), shootIntake)
             .handleInterrupt(() -> shootIntake.stopFeeder()));
   }
@@ -42,10 +41,9 @@ public class ShootCommands {
   }
 
   public static Command pass(ShootIntake shootIntake) {
-    return new ParallelCommandGroup(
-        Commands.run(() -> shootIntake.rampFlyWheel(6), shootIntake)
-            .handleInterrupt(() -> shootIntake.stopFlyWheel()),
-        Commands.run(() -> shootIntake.feedShooter(-12), shootIntake)
+    return Commands.run(() -> shootIntake.rampFlyWheel(6), shootIntake)
+            .handleInterrupt(() -> shootIntake.stopFlyWheel()).alongWith(
+                Commands.run(() -> shootIntake.feedShooter(-12), shootIntake)
             .handleInterrupt(() -> shootIntake.stopFeeder()));
   }
 

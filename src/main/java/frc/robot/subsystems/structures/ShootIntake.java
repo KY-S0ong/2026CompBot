@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShootIntake extends SubsystemBase {
 
-  private TalonFX intakeShooter = new TalonFX(31);
-  private TalonFX feeder = new TalonFX(32);
+  private TalonFX intakeShooter = new TalonFX(30);
+  private TalonFX feeder = new TalonFX(31);
   private MotorOutputConfigs intakeShooterConfiguration = new MotorOutputConfigs();
   private MotorOutputConfigs feederConfiguration = new MotorOutputConfigs();
 

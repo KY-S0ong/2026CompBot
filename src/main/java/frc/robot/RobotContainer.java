@@ -8,7 +8,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -20,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.ShootCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -172,7 +170,7 @@ public class RobotContainer {
                 () -> drive.getPose()));
 
     // Lock to 0° when A button is held
-    new JoystickButton(RdriveJoystick, 3)
+    new JoystickButton(RdriveJoystick, 2)
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -188,7 +186,7 @@ public class RobotContainer {
                 () -> -LdriveJoystick.getX(),
                 () -> Rotation2d.k180deg));
     // Switch to X pattern when X button is pressed
-    new JoystickButton(RdriveJoystick, 4).onTrue(Commands.runOnce(drive::stopWithX, drive));
+    new JoystickButton(RdriveJoystick, 5).onTrue(Commands.runOnce(drive::stopWithX, drive));
     // Reset gyro to 0° when B button is pressed
     new JoystickButton(RdriveJoystick, 3)
         .onTrue(
@@ -201,12 +199,13 @@ public class RobotContainer {
   }
 
   private void shootBindings() {
-    new JoystickButton(LdriveJoystick, 1).whileTrue(ShootCommands.rampFlyWheel(shootIntake, .5));
-    new JoystickButton(RdriveJoystick, 1).whileTrue(ShootCommands.intake(shootIntake));
+    // new JoystickButton(LdriveJoystick, 1).whileTrue(ShootCommands.rampFlyWheel(shootIntake, .5));
+    // new JoystickButton(RdriveJoystick, 1).whileTrue(ShootCommands.intake(shootIntake));
   }
 
   private void autoNamedCommands() {
-    NamedCommands.registerCommand("launchSequence", ShootCommands.autolaunchSequence(shootIntake));
+    // NamedCommands.registerCommand("launchSequence",
+    // ShootCommands.autolaunchSequence(shootIntake));
   }
 
   /**
