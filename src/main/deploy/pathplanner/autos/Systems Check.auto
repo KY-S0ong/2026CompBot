@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Center Shoot"
+            "pathName": "Stationary"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {
