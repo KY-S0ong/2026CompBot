@@ -21,6 +21,12 @@
           "data": {
             "name": "launchSequence"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "climbSequence"
+          }
         }
       ]
     }

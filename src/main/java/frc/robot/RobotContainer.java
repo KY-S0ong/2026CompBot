@@ -28,7 +28,8 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.structures.ShootIntake;
+import frc.robot.subsystems.structures.Feeder;
+import frc.robot.subsystems.structures.Flywheel;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -41,7 +42,8 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   // private VisionSystem visionSystem = new VisionSystem();
-  private ShootIntake shootIntake = new ShootIntake();
+  private Flywheel shootIntake = new Flywheel();
+  private Feeder feeder = new Feeder();
 
   // Controller
   public static final Joystick LdriveJoystick = new Joystick(0);
@@ -206,7 +208,8 @@ public class RobotContainer {
   }
 
   private void autoNamedCommands() {
-    NamedCommands.registerCommand("launchSequence", ShootCommands.autolaunchSequence(shootIntake));
+    NamedCommands.registerCommand(
+        "launchSequence", ShootCommands.autolaunchSequence(shootIntake, feeder));
   }
 
   /**

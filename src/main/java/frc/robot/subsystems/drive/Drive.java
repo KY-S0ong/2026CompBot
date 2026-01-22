@@ -173,8 +173,10 @@ public class Drive extends SubsystemBase {
           LimelightHelpers.getBotPose2d("dalight"), Timer.getFPGATimestamp(), null);
     }
 
-    SmartDashboard.putNumber("Shot Angle", getShotAngle(() -> getPose()));
-    SmartDashboard.putNumber("Shot Distance", getShotDistance().in(Units.Meters));
+    SmartDashboard.putNumber(
+        "Shot Angle",
+        edu.wpi.first.math.util.Units.radiansToDegrees(getShotAngle(() -> getPose())));
+    SmartDashboard.putNumber("Shot Distance", getShotDistance().in(Units.Feet));
 
     // Stop moving when disabled
     if (DriverStation.isDisabled()) {
@@ -396,7 +398,7 @@ public class Drive extends SubsystemBase {
     Pose2d drivePose = poseSupplier.get();
     double desiredAngle =
         StrictMath.atan2(hubPose.getY() - drivePose.getY(), hubPose.getX() - drivePose.getX());
-    //desiredAngle += edu.wpi.first.math.util.Units.degreesToRadians(179.0);
+    // desiredAngle += edu.wpi.first.math.util.Units.degreesToRadians(179.0);
     return desiredAngle;
   }
 }

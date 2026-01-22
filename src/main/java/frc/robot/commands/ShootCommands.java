@@ -6,59 +6,58 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.subsystems.structures.ShootIntake;
+import frc.robot.subsystems.structures.Feeder;
+import frc.robot.subsystems.structures.Flywheel;
 
 /** Add your docs here. */
 public class ShootCommands {
 
   private ShootCommands() {}
-  //TODO: ensure voltages set to correct values
-  public static Command rampFlyWheel(ShootIntake shootIntake, double volts) {
+  // TODO: ensure voltages set to correct values
+  public static Command rampFlyWheel(Flywheel shootIntake, double volts) {
     return Commands.run(() -> shootIntake.rampFlyWheel(volts), shootIntake)
         .handleInterrupt(() -> shootIntake.stopFlyWheel());
   }
 
-  public static Command feed(ShootIntake shootIntake) {
-    return Commands.run(() -> shootIntake.feedShooter(6), shootIntake)
-        .handleInterrupt(() -> shootIntake.stopFeeder());
+  public static Command feed(Feeder feeder) {
+    return Commands.run(() -> feeder.feedShooter(6), feeder)
+        .handleInterrupt(() -> feeder.stopFeeder());
   }
 
-  public static Command intake(ShootIntake shootIntake) {
-    return Commands.race(rampFlyWheel(shootIntake, -6)
-        .handleInterrupt(() -> shootIntake.stopFlyWheel())
-        .alongWith(rampFlyWheel(shootIntake, 6))
-                .handleInterrupt(() -> shootIntake.stopFeeder()));
+  public static Command intake(Flywheel flyWheel, Feeder feeder) {
+    return rampFlyWheel(flyWheel, -6)
+        .handleInterrupt(() -> flyWheel.stopFlyWheel())
+        .alongWith(rampFlyWheel(flyWheel, 6))
+        .handleInterrupt(() -> feeder.stopFeeder());
   }
 
-  public static Command extake(ShootIntake shootIntake) {
-     return Commands.race(rampFlyWheel(shootIntake, -6)
-        .handleInterrupt(() -> shootIntake.stopFlyWheel())
-        .alongWith(rampFlyWheel(shootIntake, -6))
-                .handleInterrupt(() -> shootIntake.stopFeeder()));
+  public static Command extake(Flywheel flyWheel, Feeder feeder) {
+    return rampFlyWheel(flyWheel, -6)
+        .handleInterrupt(() -> flyWheel.stopFlyWheel())
+        .alongWith(rampFlyWheel(flyWheel, -6))
+        .handleInterrupt(() -> feeder.stopFeeder());
   }
 
-  public static Command pass(ShootIntake shootIntake) {
-    return Commands.race(rampFlyWheel(shootIntake, 6)
-        .handleInterrupt(() -> shootIntake.stopFlyWheel())
-        .alongWith(rampFlyWheel(shootIntake, 6))
-                .handleInterrupt(() -> shootIntake.stopFeeder()));
+  public static Command pass(Flywheel flyWheel, Feeder feeder) {
+    return rampFlyWheel(flyWheel, 6)
+        .handleInterrupt(() -> flyWheel.stopFlyWheel())
+        .alongWith(rampFlyWheel(flyWheel, 6))
+        .handleInterrupt(() -> feeder.stopFeeder());
   }
 
-  /* Eventually implement distance calibrations  */ 
+  /* Eventually implement distance calibrations  */
 
-  public static Command launchSequence(ShootIntake shootIntake) {
-     return Commands.race(
-        rampFlyWheel(shootIntake, 0.5)
-            .withTimeout(.5)
-            .andThen(rampFlyWheel(shootIntake, 1))
-                .alongWith(feed(shootIntake)));
-    }
-  
-  public static Command autolaunchSequence(ShootIntake shootIntake) {
-    return Commands.race(
-        rampFlyWheel(shootIntake, 0.5)
-            .withTimeout(1)
-            .andThen(rampFlyWheel(shootIntake, 1).withTimeout(5))
-                .alongWith(feed(shootIntake)));
+  public static Command launchSequence(Flywheel flyWheel, Feeder feeder) {
+    return rampFlyWheel(flyWheel, 0.5)
+        .withTimeout(.5)
+        .andThen(rampFlyWheel(flyWheel, 1))
+        .alongWith(feed(feeder));
+  }
+
+  public static Command autolaunchSequence(Flywheel flyWheel, Feeder feeder) {
+    return rampFlyWheel(flyWheel, 0.5)
+        .withTimeout(1)
+        .andThen(rampFlyWheel(flyWheel, 1).withTimeout(5))
+        .alongWith(feed(feeder));
   }
 }

@@ -10,24 +10,19 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ShootIntake extends SubsystemBase {
+public class Flywheel extends SubsystemBase {
 
   private TalonFX intakeShooter = new TalonFX(30);
-  private TalonFX feeder = new TalonFX(31);
   private MotorOutputConfigs intakeShooterConfiguration = new MotorOutputConfigs();
-  private MotorOutputConfigs feederConfiguration = new MotorOutputConfigs();
 
   private double gearRatio = 1.0;
 
-  public ShootIntake() {
+  public Flywheel() {
     // intakeShooterConfiguration.Inverted = InvertedValue.CounterClockwise_Positive;
-    // feederConfiguration.Inverted = InvertedValue.CounterClockwise_Positive;
 
     intakeShooterConfiguration.withNeutralMode(NeutralModeValue.Coast);
-    feederConfiguration.withNeutralMode(NeutralModeValue.Coast);
 
     intakeShooter.getConfigurator().apply(intakeShooterConfiguration);
-    feeder.getConfigurator().apply(feederConfiguration);
   }
 
   @Override
@@ -41,14 +36,6 @@ public class ShootIntake extends SubsystemBase {
 
   public void stopFlyWheel() {
     intakeShooter.set(0);
-  }
-
-  public void feedShooter(double volts) {
-    feeder.setVoltage(volts);
-  }
-
-  public void stopFeeder() {
-    feeder.set(0);
   }
 
   private void SmartDashboardUpdate() {

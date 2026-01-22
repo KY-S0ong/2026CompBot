@@ -5,13 +5,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.structures.ShootIntake;
+import frc.robot.subsystems.structures.Flywheel;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class testShoot extends Command {
-  private ShootIntake s;
+  private Flywheel s;
 
-  public testShoot(ShootIntake s) {
+  public testShoot(Flywheel s) {
     this.s = s;
     addRequirements(s);
     // Use addRequirements() here to declare subsystem dependencies.
