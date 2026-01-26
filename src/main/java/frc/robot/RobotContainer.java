@@ -30,6 +30,11 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.structures.Feeder;
 import frc.robot.subsystems.structures.Flywheel;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -41,6 +46,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final Vision vision;
   // private VisionSystem visionSystem = new VisionSystem();
   private Flywheel shootIntake = new Flywheel();
   private Feeder feeder = new Feeder();
@@ -61,6 +67,7 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
+
         drive =
             new Drive(
                 new GyroIOPigeon2(),
@@ -68,6 +75,13 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
+
+        // Real robot, instantiate hardware IO implementations
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOLimelight(Constants.limeLight, drive::getRotation),
+                new VisionIOPhotonVision(Constants.pi1Pho1, Constants.pi1pho1CamPose));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -97,6 +111,12 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOLimelight(Constants.limeLight, drive::getRotation),
+                new VisionIOPhotonVisionSim(
+                    Constants.pi1Pho1, Constants.pi1pho1CamPose, drive::getPose));
         break;
 
       default:
@@ -108,6 +128,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         break;
     }
 

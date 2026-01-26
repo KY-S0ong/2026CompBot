@@ -67,7 +67,7 @@ public class Drive extends SubsystemBase {
               Math.hypot(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)));
 
   // PathPlanner config constants
-  private static final double ROBOT_MASS_KG = 74.088;
+  private static final double ROBOT_MASS_KG = 49.088;
   private static final double ROBOT_MOI = 6.883;
   private static final double WHEEL_COF = 1.2;
   private static final RobotConfig PP_CONFIG =
@@ -168,9 +168,9 @@ public class Drive extends SubsystemBase {
     odometryLock.unlock();
 
     /* Vision Odemetry */
-    if (LimelightHelpers.getTV("dalight")) {
+    if (LimelightHelpers.getTV(Constants.limeLight)) {
       addVisionMeasurement(
-          LimelightHelpers.getBotPose2d("dalight"), Timer.getFPGATimestamp(), null);
+          LimelightHelpers.getBotPose2d(Constants.limeLight), Timer.getFPGATimestamp(), null);
     }
 
     SmartDashboard.putNumber(

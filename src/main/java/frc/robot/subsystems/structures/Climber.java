@@ -11,15 +11,25 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Climber extends SubsystemBase {
 
   private SparkMax c1Motor = new SparkMax(40, MotorType.kBrushless);
-  private SparkMax c2Motor = new SparkMax(41, MotorType.kBrushless);
+  private double gearRatio = 16.0;
 
   public Climber() {
     c1Motor.setInverted(false);
-    c2Motor.setInverted(true);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public double timeToClimb() {
+    double currentPosition = c1Motor.getEncoder().getPosition() * gearRatio;
+    double velocity = c1Motor.getEncoder().getVelocity();
+
+    return (currentPosition / velocity);
+  }
+
+  public void setClimberVolts(double volts) {
+    c1Motor.setVoltage(volts);
   }
 }

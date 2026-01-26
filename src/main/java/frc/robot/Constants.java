@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 
@@ -20,6 +21,12 @@ import edu.wpi.first.wpilibj.RobotBase;
 public final class Constants {
   public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
+
+  public static final String limeLight = "dalight";
+  public static final String pi1Pho1 = "_mainPho1";
+  
+  public static Transform3d pi1pho1CamPose =
+      new Transform3d(0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, 0.0));
 
   public static final Pose3d redHubPose =
       new Pose3d(

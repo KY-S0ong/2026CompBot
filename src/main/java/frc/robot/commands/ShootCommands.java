@@ -13,6 +13,7 @@ import frc.robot.subsystems.structures.Flywheel;
 public class ShootCommands {
 
   private ShootCommands() {}
+
   // TODO: ensure voltages set to correct values
   public static Command rampFlyWheel(Flywheel shootIntake, double volts) {
     return Commands.run(() -> shootIntake.rampFlyWheel(volts), shootIntake)
@@ -45,7 +46,7 @@ public class ShootCommands {
         .handleInterrupt(() -> feeder.stopFeeder());
   }
 
-  /* Eventually implement distance calibrations  */
+  /* Eventually implement distance calibrations */
 
   public static Command launchSequence(Flywheel flyWheel, Feeder feeder) {
     return rampFlyWheel(flyWheel, 0.5)
@@ -60,4 +61,19 @@ public class ShootCommands {
         .andThen(rampFlyWheel(flyWheel, 1).withTimeout(5))
         .alongWith(feed(feeder));
   }
+
+  /*public static Command testAlignPriority(Flywheel flyWheel, Feeder feeder, Drive drive) {
+    double currentAngle = drive.getRotation().getRadians();
+    double desiredAngle = drive.getShotAngle(() -> drive.getPose());
+    if (currentAngle == desiredAngle) {
+      return rampFlyWheel(flyWheel, 0.5)
+          .withTimeout(1)
+          .andThen(rampFlyWheel(flyWheel, 1).withTimeout(5))
+          .alongWith(feed(feeder));
+    }
+    else{
+      return null;
+    }
+  }*/
+
 }
