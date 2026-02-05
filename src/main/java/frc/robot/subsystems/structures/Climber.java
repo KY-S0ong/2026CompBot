@@ -13,6 +13,7 @@ public class Climber extends SubsystemBase {
   private SparkMax c1Motor = new SparkMax(40, MotorType.kBrushless);
   private double gearRatio = 16.0;
 
+  @SuppressWarnings("deprecation")
   public Climber() {
     c1Motor.setInverted(false);
   }
