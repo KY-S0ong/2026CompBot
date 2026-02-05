@@ -176,7 +176,7 @@ public class Drive extends SubsystemBase {
     SmartDashboard.putNumber(
         "Shot Angle",
         edu.wpi.first.math.util.Units.radiansToDegrees(getShotAngle(() -> getPose())));
-    SmartDashboard.putNumber("Shot Distance", getShotDistance().in(Units.Feet));
+    SmartDashboard.putNumber("Shot Distance", getShotDistance().in(Units.Meter));
 
     // Stop moving when disabled
     if (DriverStation.isDisabled()) {

@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.structures;
 
-import static edu.wpi.first.units.Units.Meter;
-
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -61,21 +59,11 @@ public class Flywheel extends SubsystemBase {
     return velocity;
   }
 
-  public Distance getShotDistance(Translation2d targetPose, Supplier<Pose2d> poseSupplier) {
-    Pose2d drivePose = poseSupplier.get();
-    double centerToTargetMeters = drivePose.getTranslation().getDistance(targetPose);
-    double centerToShooterMeters = DriveConstants.shooterSideOffset.in(Units.Meters);
-    double shooterToTargetMeters =
-        Math.sqrt(Math.pow(centerToTargetMeters, 2.0) - Math.pow(centerToShooterMeters, 2.0));
-    return Units.Meters.of(shooterToTargetMeters);
-  }
+  
 
-  public Distance getShotDistance(Supplier<Pose2d> poseSupplier) {
-    return getShotDistance(DriveConstants.getHubPose().toPose2d().getTranslation(), poseSupplier);
-  }
+  public double getShotVolts() {
 
-  public double getShotVolts(Supplier<Pose2d> poseSupplier) {
-    double distance = getShotDistance(poseSupplier).in(Meter);
+    double distance = SmartDashboard.getNumber("Shot Distance", fuelMass);
 
     double velocity = getShotVelocity(distance);
 
@@ -89,5 +77,6 @@ public class Flywheel extends SubsystemBase {
   private void SmartDashboardUpdate() {
     SmartDashboard.putNumber(
         "FlyWheel RPM", gearRatio * intakeShooter.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Desired Shot Voltage", getShotVolts());
   }
 }

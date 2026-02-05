@@ -51,10 +51,15 @@ public class ShootCommands {
   /* Eventually implement distance calibrations */
 
   public static Command launchSequence(Flywheel flyWheel, Feeder feeder, Supplier<Pose2d> pose2dSupplier) {
-    return rampFlyWheel(flyWheel, 0.5)
+    return rampFlyWheel(flyWheel, flyWheel.getShotVolts())
         .withTimeout(.5)
-        .andThen(rampFlyWheel(flyWheel, 1))
+        .andThen(rampFlyWheel(flyWheel, flyWheel.getShotVolts()))
         .alongWith(feed(feeder));
+  }
+
+  //REMOVE Later
+  public static Command testShot(Flywheel flyWheel) {
+    return rampFlyWheel(flyWheel, flyWheel.getShotVolts());
   }
 
   public static Command autolaunchSequence(Flywheel flyWheel, Feeder feeder) {
@@ -64,18 +69,5 @@ public class ShootCommands {
         .alongWith(feed(feeder));
   }
 
-  /*public static Command testAlignPriority(Flywheel flyWheel, Feeder feeder, Drive drive) {
-    double currentAngle = drive.getRotation().getRadians();
-    double desiredAngle = drive.getShotAngle(() -> drive.getPose());
-    if (currentAngle == desiredAngle) {
-      return rampFlyWheel(flyWheel, 0.5)
-          .withTimeout(1)
-          .andThen(rampFlyWheel(flyWheel, 1).withTimeout(5))
-          .alongWith(feed(feeder));
-    }
-    else{
-      return null;
-    }
-  }*/
 
 }
