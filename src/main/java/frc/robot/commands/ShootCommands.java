@@ -4,13 +4,12 @@
 
 package frc.robot.commands;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.structures.Feeder;
 import frc.robot.subsystems.structures.Flywheel;
+import java.util.function.Supplier;
 
 /** Add your docs here. */
 public class ShootCommands {
@@ -50,14 +49,15 @@ public class ShootCommands {
 
   /* Eventually implement distance calibrations */
 
-  public static Command launchSequence(Flywheel flyWheel, Feeder feeder, Supplier<Pose2d> pose2dSupplier) {
+  public static Command launchSequence(
+      Flywheel flyWheel, Feeder feeder, Supplier<Pose2d> pose2dSupplier) {
     return rampFlyWheel(flyWheel, flyWheel.getShotVolts())
         .withTimeout(.5)
         .andThen(rampFlyWheel(flyWheel, flyWheel.getShotVolts()))
         .alongWith(feed(feeder));
   }
 
-  //REMOVE Later
+  // REMOVE Later
   public static Command testShot(Flywheel flyWheel) {
     return rampFlyWheel(flyWheel, flyWheel.getShotVolts());
   }
@@ -68,6 +68,4 @@ public class ShootCommands {
         .andThen(rampFlyWheel(flyWheel, 1).withTimeout(5))
         .alongWith(feed(feeder));
   }
-
-
 }
