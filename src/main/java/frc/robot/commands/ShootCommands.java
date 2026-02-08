@@ -51,15 +51,15 @@ public class ShootCommands {
 
   public static Command launchSequence(
       Flywheel flyWheel, Feeder feeder, Supplier<Pose2d> pose2dSupplier) {
-    return rampFlyWheel(flyWheel, flyWheel.getShotVolts())
+    return rampFlyWheel(flyWheel, flyWheel.getTargetVolts())
         .withTimeout(.5)
-        .andThen(rampFlyWheel(flyWheel, flyWheel.getShotVolts()))
+        .andThen(rampFlyWheel(flyWheel, flyWheel.getTargetVolts()))
         .alongWith(feed(feeder));
   }
 
   // REMOVE Later
   public static Command testShot(Flywheel flyWheel) {
-    return rampFlyWheel(flyWheel, flyWheel.getShotVolts());
+    return rampFlyWheel(flyWheel, flyWheel.getTargetVolts());
   }
 
   public static Command autolaunchSequence(Flywheel flyWheel, Feeder feeder) {
