@@ -19,6 +19,12 @@
         {
           "type": "named",
           "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "launchSequence"
           }
         },
@@ -26,6 +32,12 @@
           "type": "named",
           "data": {
             "name": "climbSequence"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoAlign"
           }
         }
       ]
