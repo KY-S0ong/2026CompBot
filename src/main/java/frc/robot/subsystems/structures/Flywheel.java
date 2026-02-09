@@ -5,12 +5,9 @@
 package frc.robot.subsystems.structures;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -51,7 +48,9 @@ public class Flywheel extends SubsystemBase {
     double g = 9.806;
     double theta = 0.99483; // Launch angle in radians
 
-    double velocity = (distance / Math.cos(theta)) * Math.sqrt((g / 2) * 1 / (Math.tan(theta) * distance - height));
+    double velocity =
+        (distance / Math.cos(theta))
+            * Math.sqrt((g / 2) * 1 / (Math.tan(theta) * distance - height));
     return velocity;
   }
 
@@ -59,8 +58,7 @@ public class Flywheel extends SubsystemBase {
 
     double targetVel = getTargetVelocity();
 
-    if (targetVel <= 0)
-      return 10.0;
+    if (targetVel <= 0) return 10.0;
 
     // Constants - you should tune these!
     double kS = 0.4; // Volts to overcome friction
@@ -73,9 +71,7 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void TESTsetFlyWheelVelocity() {
-    intakeShooter.setControl(new VelocityVoltage(
-        getTargetVelocity() /
-            ((Math.PI * 2) * 4)));
+    intakeShooter.setControl(new VelocityVoltage(getTargetVelocity() / ((Math.PI * 2) * 4)));
   }
 
   private void SmartDashboardUpdate() {
@@ -87,16 +83,16 @@ public class Flywheel extends SubsystemBase {
   /*
    * private double AminTargetVelocity(){
    * double distance = SmartDashboard.getNumber("Shot Distance", 2.0 );
-   * 
+   *
    * double g = 9.806;
    * double theta = 0.99483; // Launch angle in radians
    * double deltaHeight = 2.64;
-   * 
+   *
    * double velocity = Math.sqrt(
    * (g * Math.pow(distance, 2)) /
    * (2 * Math.pow(Math.cos(theta), 2) * (distance * Math.tan(theta) -
    * deltaHeight)));
-   * 
+   *
    * return velocity;
    * }
    */
