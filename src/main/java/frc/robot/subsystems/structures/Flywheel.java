@@ -8,16 +8,19 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Flywheel extends SubsystemBase {
 
-  private TalonFX intakeShooter = new TalonFX(30);
+  private TalonFX intakeShooter = new TalonFX(51);
+  private TalonFX feeder = new TalonFX(52);
   private MotorOutputConfigs intakeShooterConfiguration = new MotorOutputConfigs();
+  private MotorOutputConfigs feederConfiguration = new MotorOutputConfigs();
 
   private double gearRatio = 1.0;
-  private double height = 100;
+  private double height = 1.91;
   private double fuelMassLBS = 0.448;
   private double fuelMassKG = .2177243;
 
@@ -46,28 +49,39 @@ public class Flywheel extends SubsystemBase {
   private double getTargetVelocity() {
     double distance = SmartDashboard.getNumber("Shot Distance", 2.0);
     double g = 9.806;
-    double theta = 0.99483; // Launch angle in radians
+    double theta = Units.degreesToRadians(75);
 
-    double velocity =
-        (distance / Math.cos(theta))
-            * Math.sqrt((g / 2) * 1 / (Math.tan(theta) * distance - height));
+    double velocity = (distance / Math.cos(theta)) * Math.sqrt(g / 2 * (Math.tan(theta) * distance - height));
     return velocity;
   }
 
   public double getTargetVolts() {
 
-    double targetVel = getTargetVelocity();
+    // double targetVel = getTargetVelocity();
+    // double rps = targetVel / ((Math.PI * 2) * 0.1016);
 
-    if (targetVel <= 0) return 10.0;
+    double distance = SmartDashboard.getNumber("Shot Distance", 3.0);
+    //double targetVoltage = 21.86 / (1 + Math.pow(Math.E, -0.219 * (distance - 5.45))) * Math.sqrt(height/1.905);
+    double targetVoltage = (3.1 * Math.sqrt(distance) + 2.55) * Math.sqrt(height/1.9);
+    return Math.min(targetVoltage, 12);
 
-    // Constants - you should tune these!
-    double kS = 0.4; // Volts to overcome friction
-    double kV = 0.5; // Volts per meter/second (example value)
 
-    double voltage = kS + (kV * targetVel);
+    /*
+     * if (rps <= 0) return 10.0;
+     * 
+     * // Constants - you should tune these!
+     * double kS = 3.0; // Volts to overcome friction
+     * double kV = 0.05; // Volts per meter/second (example value)
+     * 
+     * double voltage = kS + (kV * rps);
+     * 
+     * // Cap the voltage to the battery limit (12V)
+     * return Math.min(voltage, 12.0);
+     */
+  }
 
-    // Cap the voltage to the battery limit (12V)
-    return Math.min(voltage, 12.0);
+  public void smartFlyWheel(){
+    
   }
 
   public void TESTsetFlyWheelVelocity() {
@@ -78,6 +92,7 @@ public class Flywheel extends SubsystemBase {
     SmartDashboard.putNumber(
         "FlyWheel RPM", gearRatio * intakeShooter.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("Desired Shot Voltage", getTargetVolts());
+    SmartDashboard.putNumber("Desired Vel", getTargetVelocity());
   }
 
   /*

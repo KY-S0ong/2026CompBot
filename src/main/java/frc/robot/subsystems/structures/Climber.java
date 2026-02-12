@@ -6,7 +6,6 @@ package frc.robot.subsystems.structures;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -31,20 +30,22 @@ public class Climber extends SubsystemBase {
   public String timeToClimb() {
     double currentPosition = c1Motor.getEncoder().getPosition() * gearRatio;
     double velocity = c1Motor.getEncoder().getVelocity();
-    
+
     if (velocity == 0) {
       return "Stationary";
     }
     return Double.toString((targetPosition - currentPosition) / velocity);
   }
-  public void positionClimb(){
+
+  public void positionClimb() {
     c1Motor.setVoltage(12);
     // Add logic to stop the motor when the target position is reached
     if (c1Motor.getEncoder().getPosition() * gearRatio >= 100) { // Example target position
       c1Motor.setVoltage(0);
     }
   }
-  public void positionDeclimb(){
+
+  public void positionDeclimb() {
     c1Motor.setVoltage(-12);
     // Add logic to stop the motor when the target position is reached
     if (c1Motor.getEncoder().getPosition() * gearRatio <= 0) { // Example target position
@@ -55,11 +56,12 @@ public class Climber extends SubsystemBase {
   public void setClimberVolts(double volts) {
     c1Motor.setVoltage(volts);
   }
-  public void manualClimb(double set){
+
+  public void manualClimb(double set) {
     c1Motor.set(set);
   }
 
-  public void putSmartDahsboard(){
+  public void putSmartDahsboard() {
     SmartDashboard.putNumber("Climber Position", c1Motor.getEncoder().getPosition() * gearRatio);
     SmartDashboard.putString("Time to Climb", timeToClimb());
   }

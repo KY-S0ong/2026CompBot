@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Feeder extends SubsystemBase {
 
-  private TalonFX feeder = new TalonFX(31);
+  private TalonFX feeder = new TalonFX(52);
   private MotorOutputConfigs feederConfiguration = new MotorOutputConfigs();
 
   public Feeder() {
