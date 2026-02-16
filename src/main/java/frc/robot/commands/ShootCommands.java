@@ -22,7 +22,7 @@ public class ShootCommands {
   }
 
   public static Command feedFly(Feeder feeder) {
-    return Commands.run(() -> feeder.feedShooter(-2), feeder)
+    return Commands.run(() -> feeder.feedShooter(-1), feeder)
         .handleInterrupt(() -> feeder.stopFeeder());
   }
 
@@ -31,7 +31,7 @@ public class ShootCommands {
     return new ParallelRaceGroup(
         rampFlyWheel(flyWheel, -6)
             .handleInterrupt(() -> flyWheel.stopFlyWheel()),
-        Commands.run(() -> feeder.feedShooter(-2), feeder)
+        Commands.run(() -> feeder.feedShooter(2), feeder)
             .handleInterrupt(() -> feeder.stopFeeder()));
   }
 
@@ -54,8 +54,8 @@ public class ShootCommands {
   public static SequentialCommandGroup autolaunchSequence(Flywheel flyWheel, Feeder feeder) {
     return new SequentialCommandGroup(
         rampFlyWheel(flyWheel, 0.5)
-            .withTimeout(1),
+            .withTimeout(0.35),
         rampFlyWheel(flyWheel, 1).withTimeout(5),
         feedFly(feeder));
-  }
+  } 
 }

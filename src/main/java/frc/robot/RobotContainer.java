@@ -225,8 +225,8 @@ public class RobotContainer {
 
   private void shootBindings() {
     //new JoystickButton(LdriveJoystick, 1).whileTrue(ShootCommands.rampFlyWheel(shootIntake, 6.5));
-    // new JoystickButton(LdriveJoystick, 1).whileTrue(ShootCommands.intake(shootIntake, feeder));
-    // new JoystickButton(RdriveJoystick, 1).whileTrue(ShootCommands.launchSequence(shootIntake,
+    new JoystickButton(LdriveJoystick, 1).whileTrue(ShootCommands.intake(shootIntake, feeder));
+    new JoystickButton(RdriveJoystick, 1).whileTrue(ShootCommands.launchSequence(shootIntake, feeder));
     // feeder));
     //new JoystickButton(RdriveJoystick, 1).whileTrue(ShootCommands.feed(feeder));
     // new JoystickButton(LdriveJoystick, 1).whileTrue(ShootCommands.testShot(shootIntake));
