@@ -26,23 +26,19 @@ public class ShootCommands {
         .handleInterrupt(() -> feeder.stopFeeder());
   }
 
-
   public static ParallelRaceGroup intake(Flywheel flyWheel, Feeder feeder) {
     return new ParallelRaceGroup(
-        rampFlyWheel(flyWheel, -6)
-            .handleInterrupt(() -> flyWheel.stopFlyWheel()),
+        rampFlyWheel(flyWheel, -6).handleInterrupt(() -> flyWheel.stopFlyWheel()),
         Commands.run(() -> feeder.feedShooter(2), feeder)
             .handleInterrupt(() -> feeder.stopFeeder()));
   }
-
 
   /* Eventually implement distance calibrations */
 
   public static SequentialCommandGroup launchSequence(Flywheel flyWheel, Feeder feeder) {
     return new SequentialCommandGroup(
-        rampFlyWheel(flyWheel, flyWheel.getTargetVolts())
-            .withTimeout(.25),
-      feedFly(feeder).alongWith(rampFlyWheel(flyWheel, flyWheel.getTargetVolts())));
+        rampFlyWheel(flyWheel, flyWheel.getTargetVolts()).withTimeout(.25),
+        feedFly(feeder).alongWith(rampFlyWheel(flyWheel, flyWheel.getTargetVolts())));
   }
 
   // REMOVE Later
@@ -53,9 +49,8 @@ public class ShootCommands {
 
   public static SequentialCommandGroup autolaunchSequence(Flywheel flyWheel, Feeder feeder) {
     return new SequentialCommandGroup(
-        rampFlyWheel(flyWheel, 0.5)
-            .withTimeout(0.35),
+        rampFlyWheel(flyWheel, 0.5).withTimeout(0.35),
         rampFlyWheel(flyWheel, 1).withTimeout(5),
         feedFly(feeder));
-  } 
+  }
 }
