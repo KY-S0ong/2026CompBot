@@ -402,6 +402,10 @@ public class Drive extends SubsystemBase {
     return getShotDistance(DriveConstants.getHubPose().toPose2d().getTranslation());
   }
 
+  public double getMovingShotDistance(){
+    return getShotDistance(DriveConstants.getHubPose().toPose2d().getTranslation()).in(Meters) - getChassisSpeeds().vxMetersPerSecond * 0.1;
+  }
+
   /* Myself :) */
 
   public double getShotAngle(Supplier<Pose2d> poseSupplier) {
@@ -409,6 +413,7 @@ public class Drive extends SubsystemBase {
     Pose2d drivePose = poseSupplier.get();
     double desiredAngle = StrictMath.atan2(hubPose.getY() - drivePose.getY(), hubPose.getX() - drivePose.getX());
     // desiredAngle += edu.wpi.first.math.util.Units.degreesToRadians(179.0);
+    //desiredAngle -= getChassisSpeeds().vyMetersPerSecond * 0.01;
     return desiredAngle + Math.PI;
   }
 
@@ -421,6 +426,10 @@ public class Drive extends SubsystemBase {
     BigDecimal distanceRounded = new BigDecimal(getShotDistance().in(Units.Meter));
     distanceRounded = distanceRounded.setScale(4, RoundingMode.HALF_UP);
     SmartDashboard.putNumber("Shot Distance", distanceRounded.doubleValue());
+
+    BigDecimal movingDistanceRounded = new BigDecimal(getMovingShotDistance());
+    movingDistanceRounded = movingDistanceRounded.setScale(4, RoundingMode.HALF_UP);
+    SmartDashboard.putNumber("Moving Shot Distance", movingDistanceRounded.doubleValue());
 
     field.setRobotPose(getPose());
     SmartDashboard.putData(field);

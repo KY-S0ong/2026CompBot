@@ -22,7 +22,7 @@ public class ShootCommands {
   }
 
   public static Command feedFly(Feeder feeder) {
-    return Commands.run(() -> feeder.feedShooter(-1), feeder)
+    return Commands.run(() -> feeder.smartFeed(-1), feeder)
         .handleInterrupt(() -> feeder.stopFeeder());
   }
 

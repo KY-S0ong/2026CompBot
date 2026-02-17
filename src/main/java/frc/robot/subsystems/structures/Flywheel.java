@@ -17,9 +17,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Flywheel extends SubsystemBase {
 
   private TalonFX intakeShooter = new TalonFX(51);
-  private TalonFX feeder = new TalonFX(52);
+  //private TalonFX feeder = new TalonFX(52);
   private MotorOutputConfigs intakeShooterConfiguration = new MotorOutputConfigs();
-  private MotorOutputConfigs feederConfiguration = new MotorOutputConfigs();
+  //private MotorOutputConfigs feederConfiguration = new MotorOutputConfigs();
 
   private double gearRatio = 1.0;
   private double height = 1.91;
@@ -63,7 +63,8 @@ public class Flywheel extends SubsystemBase {
     // double targetVel = getTargetVelocity();
     // double rps = targetVel / ((Math.PI * 2) * 0.1016);
 
-    double distance = SmartDashboard.getNumber("Shot Distance", 3.0);
+    //double distance = SmartDashboard.getNumber("Shot Distance", 2.5);
+    double distance = SmartDashboard.getNumber("Moving Shot Distance", 2.5);
     // double targetVoltage = 21.86 / (1 + Math.pow(Math.E, -0.219 * (distance - 5.45))) *
     // Math.sqrt(height/1.905);
     double targetVoltage = (3.1 * Math.sqrt(distance) + 2.55) * Math.sqrt(height / 1.9);
