@@ -238,6 +238,7 @@ public class RobotContainer {
   private void autoNamedCommands() {
     NamedCommands.registerCommand(
         "launchSequence", ShootCommands.autolaunchSequence(shootIntake, feeder));
+    NamedCommands.registerCommand("intake", ShootCommands.intake(shootIntake, feeder));
   }
 
   /**

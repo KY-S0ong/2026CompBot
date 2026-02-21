@@ -7,7 +7,6 @@ package frc.robot.subsystems.structures;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -30,16 +29,14 @@ public class Feeder extends SubsystemBase {
     feeder.setVoltage(volts);
   }
 
-  public void smartFeed(double volts){
+  public void smartFeed(double volts) {
     double distance = SmartDashboard.getNumber("Shot Distance", 2.0);
 
-    if(distance < 2.0){
+    if (distance < 2.0) {
       feeder.setVoltage(0);
-    }
-    else if (distance > 2.0 && distance < 4.0){
+    } else if (distance > 2.0 && distance < 4.0) {
       feeder.setVoltage(volts);
-    }
-    else{
+    } else {
       feeder.setVoltage(0);
     }
   }
