@@ -40,8 +40,10 @@ public class DriveConstants {
           Units.Inches.of(72.0),
           new Rotation3d());
 
-  public static final Pose3d redFerryPose = new Pose3d(14.3, 4.02, 0, Rotation3d.kZero);
-  public static final Pose3d blueFerryPose = new Pose3d(2.1, 4.02, 0, Rotation3d.kZero);
+  public static final Pose3d redFerryPose1 = new Pose3d(13.23, 5.49, 0, Rotation3d.kZero);
+  public static final Pose3d blueFerryPose1 = new Pose3d(3.15, 2.45, 0, Rotation3d.kZero);
+  public static final Pose3d redFerryPose2 = new Pose3d(13.17, 2.49, 0, Rotation3d.kZero);
+  public static final Pose3d blueFerryPose2 = new Pose3d(3.43, 5.55, 0, Rotation3d.kZero);
 
   public static final Angle epsilonAngleToGoal = Degrees.of(1.0);
 
