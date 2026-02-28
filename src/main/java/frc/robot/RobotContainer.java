@@ -18,7 +18,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.ClimbCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ShootCommands;
 import frc.robot.generated.TunerConstants;
@@ -28,6 +30,7 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.structures.Climber;
 import frc.robot.subsystems.structures.Feeder;
 import frc.robot.subsystems.structures.Flywheel;
 import frc.robot.subsystems.vision.Vision;
@@ -50,6 +53,7 @@ public class RobotContainer {
   // private VisionSystem visionSystem = new VisionSystem();
   private Flywheel shootIntake = new Flywheel();
   private Feeder feeder = new Feeder();
+  private Climber climber = new Climber();
 
   // Controller
   public static final Joystick LdriveJoystick = new Joystick(1);
@@ -164,6 +168,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     driveBindings();
     shootBindings();
+    climbBindings();
   }
 
   private void driveBindings() {
@@ -211,9 +216,9 @@ public class RobotContainer {
                 () -> -LdriveJoystick.getX(),
                 () -> Rotation2d.k180deg));
     // Switch to X pattern when X button is pressed
-    new JoystickButton(RdriveJoystick, 5).onTrue(Commands.runOnce(drive::stopWithX, drive));
+    // new JoystickButton(RdriveJoystick, 5).onTrue(Commands.runOnce(drive::stopWithX, drive));
     // Reset gyro to 0° when B button is pressed
-    new JoystickButton(RdriveJoystick, 3)
+    new JoystickButton(RdriveJoystick, 5)
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -229,10 +234,17 @@ public class RobotContainer {
     new JoystickButton(LdriveJoystick, 1).whileTrue(ShootCommands.intake(shootIntake, feeder));
     new JoystickButton(RdriveJoystick, 1)
         .whileTrue(ShootCommands.launchSequence(shootIntake, feeder));
+    new JoystickButton(RdriveJoystick, 3)
+        .whileTrue(ShootCommands.voltLaunch(shootIntake, feeder, 6.5));
     // feeder));
     // new JoystickButton(RdriveJoystick, 1).whileTrue(ShootCommands.feed(feeder));
     // new JoystickButton(LdriveJoystick, 1).whileTrue(ShootCommands.testShot(shootIntake));
     // new JoystickButton(RdriveJoystick, 1).whileTrue(ShootCommands.intake(shootIntake));
+  }
+
+  private void climbBindings() {
+    new POVButton(LdriveJoystick, 0).whileTrue(ClimbCommands.simpleClimbCommand(climber));
+    new POVButton(LdriveJoystick, 180).whileTrue(ClimbCommands.simpleDeclimbCommand(climber));
   }
 
   private void autoNamedCommands() {

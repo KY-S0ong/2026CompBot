@@ -62,8 +62,8 @@ public class Flywheel extends SubsystemBase {
     // double targetVel = getTargetVelocity();
     // double rps = targetVel / ((Math.PI * 2) * 0.1016);
 
-    // double distance = SmartDashboard.getNumber("Shot Distance", 2.5);
-    double distance = SmartDashboard.getNumber("Moving Shot Distance", 2.5);
+    double distance = SmartDashboard.getNumber("Shot Distance", 2.0);
+    // double distance = SmartDashboard.getNumber("Moving Shot Distance", 2.5);
     // double targetVoltage = 21.86 / (1 + Math.pow(Math.E, -0.219 * (distance - 5.45))) *
     // Math.sqrt(height/1.905);
     double targetVoltage = (3.15 * Math.sqrt(distance) + 2.55) * Math.sqrt(height / 1.9);
@@ -86,7 +86,9 @@ public class Flywheel extends SubsystemBase {
   public void smartFlyWheel() {}
 
   public void TESTsetFlyWheelVelocity() {
-    intakeShooter.setControl(new VelocityVoltage(getTargetVelocity() / ((Math.PI * 2) * 4)));
+    double distance = SmartDashboard.getNumber("Shot Distance", 2.0);
+    double velocity = distance;
+    intakeShooter.setControl(new VelocityVoltage(velocity));
   }
 
   @SuppressWarnings("deprecation")

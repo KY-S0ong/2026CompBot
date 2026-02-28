@@ -41,6 +41,12 @@ public class ShootCommands {
         feedFly(feeder).alongWith(rampFlyWheel(flyWheel, flyWheel.getTargetVolts())));
   }
 
+  public static SequentialCommandGroup voltLaunch(Flywheel flyWheel, Feeder feeder, double volts) {
+    return new SequentialCommandGroup(
+        rampFlyWheel(flyWheel, volts).withTimeout(.25),
+        feedFly(feeder).alongWith(rampFlyWheel(flyWheel, volts)));
+  }
+
   // REMOVE Later
   public static Command testShot(Flywheel flyWheel) {
     return Commands.run(() -> flyWheel.rampFlyWheel(flyWheel.getTargetVolts()), flyWheel)
