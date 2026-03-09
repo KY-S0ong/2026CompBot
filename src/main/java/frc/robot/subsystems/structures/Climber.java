@@ -28,7 +28,7 @@ public class Climber extends SubsystemBase {
   }
 
   public String timeToClimb() {
-    double currentPosition = c1Motor.getEncoder().getPosition() * gearRatio;
+    double currentPosition = c1Motor.getEncoder().getPosition() / gearRatio;
     double velocity = c1Motor.getEncoder().getVelocity();
 
     if (velocity == 0) {
@@ -38,7 +38,7 @@ public class Climber extends SubsystemBase {
   }
 
   public void positionClimb() {
-    c1Motor.setVoltage(12);
+    c1Motor.setVoltage(7);
     // Add logic to stop the motor when the target position is reached
     if (c1Motor.getEncoder().getPosition() * gearRatio >= 100) { // Example target position
       c1Motor.setVoltage(0);
@@ -46,7 +46,7 @@ public class Climber extends SubsystemBase {
   }
 
   public void positionDeclimb() {
-    c1Motor.setVoltage(-12);
+    c1Motor.setVoltage(-7);
     // Add logic to stop the motor when the target position is reached
     if (c1Motor.getEncoder().getPosition() * gearRatio <= 0) { // Example target position
       c1Motor.setVoltage(0);
@@ -62,7 +62,7 @@ public class Climber extends SubsystemBase {
   }
 
   public void putSmartDahsboard() {
-    SmartDashboard.putNumber("Climber Position", c1Motor.getEncoder().getPosition() * gearRatio);
+    SmartDashboard.putNumber("Climber Position", c1Motor.getEncoder().getPosition() / gearRatio);
     SmartDashboard.putString("Time to Climb", timeToClimb());
   }
 }

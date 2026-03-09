@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.318216833095578,
-        "y": 5.283580599144081
+        "x": 2.3746111111111112,
+        "y": 4.902255555555555
       },
       "isLocked": false,
       "linkedName": "Center Shot"
     },
     {
       "anchor": {
-        "x": 1.0631669044222536,
-        "y": 4.701340941512126
+        "x": 1.0883444444444443,
+        "y": 4.726855555555556
       },
       "prevControl": {
-        "x": 1.4772039942938657,
-        "y": 4.85660485021398
+        "x": 1.3299719112699357,
+        "y": 4.7910129189326165
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,10 +31,22 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "climbUp",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "climbUp"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 17.5,
-    "maxAcceleration": 5.95,
+    "maxVelocity": 6.61,
+    "maxAcceleration": 5.75,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -178.7269699799433
+    "rotation": 179.30972280213481
   },
   "reversed": false,
   "folder": "Center",

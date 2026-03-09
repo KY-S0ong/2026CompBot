@@ -36,7 +36,6 @@ import frc.robot.subsystems.structures.Flywheel;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -56,8 +55,8 @@ public class RobotContainer {
   private Climber climber = new Climber();
 
   // Controller
-  public static final Joystick LdriveJoystick = new Joystick(1);
-  public static final Joystick RdriveJoystick = new Joystick(0);
+  public static final Joystick LdriveJoystick = new Joystick(0);
+  public static final Joystick RdriveJoystick = new Joystick(1);
   private static final CommandXboxController opperatorController = new CommandXboxController(2);
 
   // Dashboard inputs
@@ -84,8 +83,8 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOLimelight(Constants.limeLight, drive::getRotation),
-                new VisionIOPhotonVision(Constants.pi1Pho1, Constants.pi1pho1CamPose));
+                new VisionIOLimelight(Constants.limeLight, drive::getRotation)
+                /*new VisionIOPhotonVision(Constants.pi1Pho1, Constants.pi1pho1CamPose) */ );
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -191,7 +190,7 @@ public class RobotContainer {
                 () -> false));
 
     // Hub-relative drive when RB is held
-    new JoystickButton(LdriveJoystick, 2)
+    new JoystickButton(RdriveJoystick, 2)
         .whileTrue(
             DriveCommands.joystickHubDrive(
                 drive,
@@ -200,7 +199,7 @@ public class RobotContainer {
                 () -> drive.getPose()));
 
     // Lock to 0° when A button is held
-    new JoystickButton(RdriveJoystick, 2)
+    new JoystickButton(RdriveJoystick, 3)
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -234,12 +233,9 @@ public class RobotContainer {
     new JoystickButton(LdriveJoystick, 1).whileTrue(ShootCommands.intake(shootIntake, feeder));
     new JoystickButton(RdriveJoystick, 1)
         .whileTrue(ShootCommands.launchSequence(shootIntake, feeder));
-    new JoystickButton(RdriveJoystick, 3)
-        .whileTrue(ShootCommands.voltLaunch(shootIntake, feeder, 6.5));
-    // feeder));
-    // new JoystickButton(RdriveJoystick, 1).whileTrue(ShootCommands.feed(feeder));
-    // new JoystickButton(LdriveJoystick, 1).whileTrue(ShootCommands.testShot(shootIntake));
-    // new JoystickButton(RdriveJoystick, 1).whileTrue(ShootCommands.intake(shootIntake));
+
+    new JoystickButton(opperatorController.getHID(), 4)
+        .whileTrue(ShootCommands.extake(shootIntake, feeder));
   }
 
   private void climbBindings() {
@@ -250,7 +246,9 @@ public class RobotContainer {
   private void autoNamedCommands() {
     NamedCommands.registerCommand(
         "launchSequence", ShootCommands.autolaunchSequence(shootIntake, feeder));
+
     NamedCommands.registerCommand("intake", ShootCommands.intake(shootIntake, feeder));
+    NamedCommands.registerCommand("extake", ShootCommands.extake(shootIntake, feeder));
   }
 
   /**

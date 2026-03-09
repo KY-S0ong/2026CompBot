@@ -22,7 +22,7 @@ public final class Constants {
   public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
-  public static final String limeLight = "dalight";
+  public static final String limeLight = "limelight";
   public static final String pi1Pho1 = "_mainPho1";
 
   public static Transform3d pi1pho1CamPose =

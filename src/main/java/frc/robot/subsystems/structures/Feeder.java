@@ -30,14 +30,14 @@ public class Feeder extends SubsystemBase {
   }
 
   public void smartFeed(double volts) {
-    double distance = SmartDashboard.getNumber("Shot Distance", 2.0);
+    // double distance = SmartDashboard.getNumber("Shot Distance", 2.0);
+    double desiredRPS = SmartDashboard.getNumber("Desired RPS", 30.0);
+    double currentRPS = SmartDashboard.getNumber("FlyWheel RPS", 0);
 
-    if (distance < 2.0) {
-      feeder.setVoltage(0);
-    } else if (distance > 2.0 && distance < 4.0) {
-      feeder.setVoltage(volts);
+    if (desiredRPS > currentRPS + 1.5) {
+      feeder.set(0);
     } else {
-      feeder.setVoltage(0);
+      feeder.setVoltage(volts);
     }
   }
 
