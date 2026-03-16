@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.util.FieldConstants;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
@@ -34,10 +35,7 @@ import java.util.function.Supplier;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.05;
-  private static final double ANGLE_KP = 6.05;
-  private static final double ANGLE_KD = 0.4;
-  private static final double ANGLE_MAX_VELOCITY = 8.0;
-  private static final double ANGLE_MAX_ACCELERATION = 20.0;
+  // All angle-based PID constants now use DriveConstants values via rotationController
   private static final double FF_START_DELAY = 2.0; // Secs
   private static final double FF_RAMP_RATE = 0.1; // Volts/Sec
   private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
@@ -138,10 +136,11 @@ public class DriveCommands {
     // Create PID controller
     ProfiledPIDController angleController =
         new ProfiledPIDController(
-            ANGLE_KP,
+            DriveConstants.ANGLE_KP,
             0.0,
-            ANGLE_KD,
-            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+            DriveConstants.ANGLE_KD,
+            new TrapezoidProfile.Constraints(
+                DriveConstants.ANGLE_MAX_VELOCITY, DriveConstants.ANGLE_MAX_ACCELERATION));
     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
     // Construct command
@@ -187,10 +186,11 @@ public class DriveCommands {
     // Create PID controller
     ProfiledPIDController angleController =
         new ProfiledPIDController(
-            ANGLE_KP,
+            DriveConstants.ANGLE_KP,
             0.0,
-            ANGLE_KD,
-            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+            DriveConstants.ANGLE_KD,
+            new TrapezoidProfile.Constraints(
+                DriveConstants.ANGLE_MAX_VELOCITY, DriveConstants.ANGLE_MAX_ACCELERATION));
     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
     // Construct command
@@ -372,10 +372,11 @@ public class DriveCommands {
     // Create PID controller for rotation
     ProfiledPIDController angleController =
         new ProfiledPIDController(
-            ANGLE_KP,
+            DriveConstants.ANGLE_KP,
             0.0,
-            ANGLE_KD,
-            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+            DriveConstants.ANGLE_KD,
+            new TrapezoidProfile.Constraints(
+                DriveConstants.ANGLE_MAX_VELOCITY, DriveConstants.ANGLE_MAX_ACCELERATION));
     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
     // Construct command
@@ -411,16 +412,17 @@ public class DriveCommands {
     // Create PID controller for rotation to keep facing hub
     ProfiledPIDController angleController =
         new ProfiledPIDController(
-            ANGLE_KP,
+            DriveConstants.ANGLE_KP,
             0.0,
-            ANGLE_KD,
-            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+            DriveConstants.ANGLE_KD,
+            new TrapezoidProfile.Constraints(
+                DriveConstants.ANGLE_MAX_VELOCITY, DriveConstants.ANGLE_MAX_ACCELERATION));
     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
     // Create PID controller for distance backup motion with trapezoidal profiling
     ProfiledPIDController distanceController =
         new ProfiledPIDController(
-            2.0, // kP for distance
+            DriveConstants.Y_CENTERING_KP, // kP for distance
             0.0,
             0.0,
             new TrapezoidProfile.Constraints(
@@ -437,7 +439,8 @@ public class DriveCommands {
 
               // Calculate backward velocity using distance PID controller
               // Negative velocity means backward
-              double backwardVelocity = -distanceController.calculate(currentDistance, targetDistance);
+              double backwardVelocity =
+                  -distanceController.calculate(currentDistance, targetDistance);
 
               // Calculate angle to hub to maintain heading while backing up
               double desiredAngle = drive.getShotAngle(() -> drive.getPose());
@@ -460,6 +463,159 @@ public class DriveCommands {
             () ->
                 drive.getShotDistance().in(edu.wpi.first.units.Units.Meter)
                     >= (DriveConstants.minimumShootingDistance - 0.05));
+  }
+
+  /**
+   * Vision-based command that centers the robot on the Y-axis under a trench opening while allowing
+   * driver control for X-axis movement (forward/back through trench). The robot will automatically
+   * maintain its Y position centered in the trench opening, but the driver can move
+   * forward/backward along the trench using joystick input.
+   *
+   * @param drive The drive subsystem
+   * @param isLeftTrench True for left trench, false for right trench
+   * @param xSupplier Driver input for X-axis movement (forward/back)
+   * @return A command that centers on Y-axis while allowing driver X control
+   */
+  private static Command centerUnderTrench(
+      Drive drive, boolean isLeftTrench, DoubleSupplier xSupplier) {
+    // Create PID controller for Y-axis centering only
+    ProfiledPIDController yController =
+        new ProfiledPIDController(
+            DriveConstants.Y_CENTERING_KP, // kP for Y-axis centering
+            DriveConstants.Y_CENTERING_KI,
+            DriveConstants.Y_CENTERING_KD,
+            new TrapezoidProfile.Constraints(
+                DriveConstants.backupMaxVelocity, DriveConstants.backupMaxAcceleration));
+
+    // Create PID controller for rotation to maintain heading
+    ProfiledPIDController angleController =
+        new ProfiledPIDController(
+            DriveConstants.ANGLE_KP,
+            0.0,
+            DriveConstants.ANGLE_KD,
+            new TrapezoidProfile.Constraints(
+                DriveConstants.ANGLE_MAX_VELOCITY, DriveConstants.ANGLE_MAX_ACCELERATION));
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
+
+    // Get target Y position (center of trench opening)
+    double targetY =
+        isLeftTrench
+            ? (FieldConstants.LeftTrench.openingTopLeft.getY()
+                    + FieldConstants.LeftTrench.openingTopRight.getY())
+                / 2.0
+            : (FieldConstants.RightTrench.openingTopLeft.getY()
+                    + FieldConstants.RightTrench.openingTopRight.getY())
+                / 2.0;
+
+    return Commands.run(
+            () -> {
+              Pose2d currentPose = drive.getPose();
+
+              // Get driver input for X-axis (forward/back through trench)
+              double driverVx = MathUtil.applyDeadband(xSupplier.getAsDouble(), DEADBAND);
+              driverVx = Math.copySign(driverVx * driverVx, driverVx); // Square for control
+
+              // Calculate Y velocity to center in trench
+              double vy = yController.calculate(currentPose.getY(), targetY);
+
+              // Maintain heading at the snapped cardinal angle (set at start)
+              double omega =
+                  angleController.calculate(drive.getRotation().getRadians(), angleController.getSetpoint());
+
+              // Apply driver X input scaled to max speed
+              double vx = driverVx * drive.getMaxLinearSpeedMetersPerSec();
+
+              // Send velocities in field-relative frame
+              ChassisSpeeds speeds = new ChassisSpeeds(vx, vy, omega);
+              boolean isFlipped =
+                  DriverStation.getAlliance().isPresent()
+                      && DriverStation.getAlliance().get() == Alliance.Red;
+              drive.runVelocity(
+                  ChassisSpeeds.fromFieldRelativeSpeeds(
+                      speeds,
+                      isFlipped
+                          ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                          : drive.getRotation()));
+            },
+            drive)
+        // Snap to nearest cardinal angle and reset controllers when command starts
+        .beforeStarting(
+            () -> {
+              Pose2d startPose = drive.getPose();
+              yController.reset(startPose.getY());
+              
+              // Snap to nearest cardinal angle (0, π/2, π, 3π/2)
+              double currentAngleRad = drive.getRotation().getRadians();
+              currentAngleRad = ((currentAngleRad % (2 * Math.PI)) + (2 * Math.PI)) % (2 * Math.PI);
+              
+              double[] cardinalAngles = {0, Math.PI / 2, Math.PI, 3 * Math.PI / 2};
+              double minDifference = Double.MAX_VALUE;
+              double desiredAngle = 0;
+              
+              for (double cardinal : cardinalAngles) {
+                double difference = Math.abs(currentAngleRad - cardinal);
+                if (difference < minDifference) {
+                  minDifference = difference;
+                  desiredAngle = cardinal;
+                }
+              }
+              
+              angleController.reset(desiredAngle);
+            })
+        // End condition: within 5cm of target Y position
+        .until(
+            () -> {
+              Pose2d currentPose = drive.getPose();
+              double currentTargetY =
+                  isLeftTrench
+                      ? (FieldConstants.LeftTrench.openingTopLeft.getY()
+                              + FieldConstants.LeftTrench.openingTopRight.getY())
+                          / 2.0
+                      : (FieldConstants.RightTrench.openingTopLeft.getY()
+                              + FieldConstants.RightTrench.openingTopRight.getY())
+                          / 2.0;
+              return Math.abs(currentPose.getY() - currentTargetY) < 0.05;
+            });
+  }
+
+  /**
+   * Vision-based command that drives to center the robot underneath the nearest trench opening.
+   * Automatically determines which trench (left or right) is closer to the current robot position
+   * and drives to center under that trench.
+   *
+   * <p>This is useful for autonomous routines where you don't know which side the robot will start
+   * on, or for dynamic positioning during a match. The robot will auto-center on the Y-axis while
+   * allowing driver control over X-axis movement through the trench.
+   *
+   * @param drive The drive subsystem
+   * @param xSupplier A supplier for driver X-axis input (forward/back movement in the trench)
+   * @return A command that drives to center under the nearest trench
+   */
+  public static Command centerUnderNearestTrench(
+      Drive drive, java.util.function.DoubleSupplier xSupplier) {
+    return Commands.select(
+        java.util.Map.ofEntries(
+            java.util.Map.entry(true, centerUnderTrench(drive, true, xSupplier)),
+            java.util.Map.entry(false, centerUnderTrench(drive, false, xSupplier))),
+        () -> {
+          // Determine which trench is closer
+          Pose2d currentPose = drive.getPose();
+          double distanceToLeftTrench =
+              Math.abs(
+                  currentPose.getY()
+                      - (FieldConstants.LeftTrench.openingTopLeft.getY()
+                              + FieldConstants.LeftTrench.openingTopRight.getY())
+                          / 2.0);
+          double distanceToRightTrench =
+              Math.abs(
+                  currentPose.getY()
+                      - (FieldConstants.RightTrench.openingTopLeft.getY()
+                              + FieldConstants.RightTrench.openingTopRight.getY())
+                          / 2.0);
+
+          // Return true if left trench is closer, false for right
+          return distanceToLeftTrench <= distanceToRightTrench;
+        });
   }
 
   private static class WheelRadiusCharacterizationState {
