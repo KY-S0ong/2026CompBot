@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveConstants;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
@@ -360,9 +361,9 @@ public class DriveCommands {
   }
 
   /**
-   * Autonomous command that rotates the robot to point at the hub for shooting.
-   * This command should be used after following a path to your shoot position.
-   * It will rotate the robot to face the hub center while holding position.
+   * Autonomous command that rotates the robot to point at the hub for shooting. This command should
+   * be used after following a path to your shoot position. It will rotate the robot to face the hub
+   * center while holding position.
    *
    * @param drive The drive subsystem
    * @return A command that rotates the robot to point at the hub
@@ -394,6 +395,71 @@ public class DriveCommands {
             drive)
         // Reset PID controller when command starts
         .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
+  }
+
+  /**
+   * Autonomous command that ensures the robot is at a safe distance from the hub before shooting.
+   * If the robot is too close, it will back up to the minimum shooting distance while maintaining
+   * its heading toward the hub. Uses trapezoidal motion profiling for smooth acceleration.
+   *
+   * <p>This command automatically ends when the robot reaches the minimum distance.
+   *
+   * @param drive The drive subsystem
+   * @return A command that backs up to minimum distance if needed
+   */
+  public static Command ensureMinimumShootingDistance(Drive drive) {
+    // Create PID controller for rotation to keep facing hub
+    ProfiledPIDController angleController =
+        new ProfiledPIDController(
+            ANGLE_KP,
+            0.0,
+            ANGLE_KD,
+            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
+
+    // Create PID controller for distance backup motion with trapezoidal profiling
+    ProfiledPIDController distanceController =
+        new ProfiledPIDController(
+            2.0, // kP for distance
+            0.0,
+            0.0,
+            new TrapezoidProfile.Constraints(
+                DriveConstants.backupMaxVelocity, DriveConstants.backupMaxAcceleration));
+
+    // Construct command
+    return Commands.run(
+            () -> {
+              // Get current distance to hub
+              double currentDistance = drive.getShotDistance().in(edu.wpi.first.units.Units.Meter);
+
+              // Calculate desired distance (setpoint)
+              double targetDistance = DriveConstants.minimumShootingDistance;
+
+              // Calculate backward velocity using distance PID controller
+              // Negative velocity means backward
+              double backwardVelocity = -distanceController.calculate(currentDistance, targetDistance);
+
+              // Calculate angle to hub to maintain heading while backing up
+              double desiredAngle = drive.getShotAngle(() -> drive.getPose());
+              double omega =
+                  angleController.calculate(drive.getRotation().getRadians(), desiredAngle);
+
+              // Move backward while maintaining heading
+              ChassisSpeeds speeds = new ChassisSpeeds(backwardVelocity, 0.0, omega);
+              drive.runVelocity(speeds);
+            },
+            drive)
+        // Reset PID controllers when command starts
+        .beforeStarting(
+            () -> {
+              angleController.reset(drive.getRotation().getRadians());
+              distanceController.reset(drive.getShotDistance().in(edu.wpi.first.units.Units.Meter));
+            })
+        // End condition: stop moving when we reach minimum distance (within 5cm tolerance)
+        .until(
+            () ->
+                drive.getShotDistance().in(edu.wpi.first.units.Units.Meter)
+                    >= (DriveConstants.minimumShootingDistance - 0.05));
   }
 
   private static class WheelRadiusCharacterizationState {

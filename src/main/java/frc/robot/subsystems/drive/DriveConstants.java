@@ -24,6 +24,11 @@ public class DriveConstants {
 
   public static final Distance shooterSideOffset = Units.Inches.of(6.0);
 
+  public static final double minimumShootingDistance = 1.0; // meters - minimum safe distance to hub
+  // Use fractions of max drive speed/acceleration for smooth backup motion
+  public static final double backupMaxVelocity = maxSpeed * 0.3; // 30% of max speed
+  public static final double backupMaxAcceleration = (maxSpeed * 0.3) / 0.5; // reach 30% speed in 0.5s
+
   public static final Transform2d shooterTransform =
       new Transform2d(Units.Inches.of(0.0), shooterSideOffset, new Rotation2d());
 
