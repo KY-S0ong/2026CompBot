@@ -359,6 +359,43 @@ public class DriveCommands {
                     })));
   }
 
+  /**
+   * Autonomous command that rotates the robot to point at the hub for shooting.
+   * This command should be used after following a path to your shoot position.
+   * It will rotate the robot to face the hub center while holding position.
+   *
+   * @param drive The drive subsystem
+   * @return A command that rotates the robot to point at the hub
+   */
+  public static Command pointAtHubForShoot(Drive drive) {
+    // Create PID controller for rotation
+    ProfiledPIDController angleController =
+        new ProfiledPIDController(
+            ANGLE_KP,
+            0.0,
+            ANGLE_KD,
+            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
+
+    // Construct command
+    return Commands.run(
+            () -> {
+              // Calculate angle to hub from current position
+              double desiredAngle = drive.getShotAngle(() -> drive.getPose());
+
+              // Calculate angular speed to rotate toward hub
+              double omega =
+                  angleController.calculate(drive.getRotation().getRadians(), desiredAngle);
+
+              // Only apply rotation, no linear movement
+              ChassisSpeeds speeds = new ChassisSpeeds(0.0, 0.0, omega);
+              drive.runVelocity(speeds);
+            },
+            drive)
+        // Reset PID controller when command starts
+        .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
+  }
+
   private static class WheelRadiusCharacterizationState {
     double[] positions = new double[4];
     Rotation2d lastAngle = Rotation2d.kZero;
