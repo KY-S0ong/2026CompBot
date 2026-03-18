@@ -23,10 +23,10 @@ public final class Constants {
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
   public static final String limeLight = "limelight";
-  public static final String pi1Pho1 = "_mainPho1";
+  public static final String pi1Pho1 = "photonvision";
 
-  public static Transform3d pi1pho1CamPose =
-      new Transform3d(0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, 0.0));
+  public static Transform3d lBCam =
+      new Transform3d(-0.23, 0.31, 0.28, new Rotation3d(3.4033, 6.021, 0.0));
 
   public static final Pose3d redHubPose =
       new Pose3d(

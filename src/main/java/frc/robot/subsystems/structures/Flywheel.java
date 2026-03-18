@@ -32,15 +32,18 @@ public class Flywheel extends SubsystemBase {
 
     // intakeShooterConfiguration.withNeutralMode(NeutralModeValue.Coast);
     // intakeShooter.getConfigurator().apply(intakeShooterConfiguration);
-    config.Slot0.kP = 1.55;
+    // 1.8
+    config.Slot0.kP = 4.5;
     config.Slot0.kD = 0.001;
-    config.Slot0.kS = 0.001;
+    // config.Slot0.kS = 0.01;
+    // config.Slot0.kS = 0.001;
 
     intakeShooter.getConfigurator().apply(config);
 
-    config2.Slot0.kP = 1.45;
-    config2.Slot0.kD = .001;
-    config2.Slot0.kS = .001;
+    config2.Slot0.kP = 4.5;
+    config2.Slot0.kD = .0001;
+    // config2.Slot0.kS = 0.01;
+    // config2.Slot0.kS = .001;
 
     intake2.getConfigurator().apply(config2);
   }
@@ -62,7 +65,7 @@ public class Flywheel extends SubsystemBase {
 
   private double getTargetVelocity() {
     double distance = SmartDashboard.getNumber("Shot Distance", 2.0);
-    double velocity = (0.088 * Math.pow(distance, 2)) + (3.855 * distance) + 16.3686;
+    double velocity = (0.088 * Math.pow(distance, 2)) + (3.65 * distance) + 17.67586;
     return velocity;
   }
 
@@ -80,8 +83,19 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void smartFlyWheel() {
-    double velocity = getTargetVelocity();
-    velocity *= 1.80;
+    double flywheelVelocity = getTargetVelocity();
+    flywheelVelocity *= 1.9;
+
+    ;
+    double topRatio = 44.0 / 56.0;
+    double topMotorVel = flywheelVelocity * topRatio;
+
+    intakeShooter.setControl(new VelocityVoltage(topMotorVel));
+    intake2.setControl(new VelocityVoltage(flywheelVelocity));
+  }
+
+  public void setFlyVelocity(double velocity) {
+    velocity *= 1.9;
     intakeShooter.setControl(new VelocityVoltage(velocity));
     intake2.setControl(new VelocityVoltage(velocity));
   }

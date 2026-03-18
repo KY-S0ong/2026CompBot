@@ -14,12 +14,12 @@ public class ClimbCommands {
   public ClimbCommands() {}
 
   public static Command simpleClimbCommand(Climber climber) {
-    return Commands.run(() -> climber.setClimberVolts(12), climber)
+    return Commands.run(() -> climber.setClimberVolts(6), climber)
         .handleInterrupt(() -> climber.setClimberVolts(0));
   }
 
   public static Command simpleDeclimbCommand(Climber climber) {
-    return Commands.run(() -> climber.setClimberVolts(-12), climber)
+    return Commands.run(() -> climber.setClimberVolts(-6), climber)
         .handleInterrupt(() -> climber.setClimberVolts(0));
   }
 

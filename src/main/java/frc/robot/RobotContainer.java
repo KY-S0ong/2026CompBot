@@ -18,9 +18,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.ClimbCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ShootCommands;
 import frc.robot.generated.TunerConstants;
@@ -30,12 +27,12 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.structures.Climber;
 import frc.robot.subsystems.structures.Feeder;
 import frc.robot.subsystems.structures.Flywheel;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -52,7 +49,7 @@ public class RobotContainer {
   // private VisionSystem visionSystem = new VisionSystem();
   private Flywheel shootIntake = new Flywheel();
   private Feeder feeder = new Feeder();
-  private Climber climber = new Climber();
+  // private Climber climber = new Climber();
 
   // Controller
   public static final Joystick LdriveJoystick = new Joystick(0);
@@ -83,8 +80,8 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOLimelight(Constants.limeLight, drive::getRotation)
-                /*new VisionIOPhotonVision(Constants.pi1Pho1, Constants.pi1pho1CamPose) */ );
+                new VisionIOLimelight(Constants.limeLight, drive::getRotation),
+                new VisionIOPhotonVision(Constants.pi1Pho1, Constants.lBCam));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -118,8 +115,7 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOLimelight(Constants.limeLight, drive::getRotation),
-                new VisionIOPhotonVisionSim(
-                    Constants.pi1Pho1, Constants.pi1pho1CamPose, drive::getPose));
+                new VisionIOPhotonVisionSim(Constants.pi1Pho1, Constants.lBCam, drive::getPose));
         break;
 
       default:
@@ -139,21 +135,21 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Set up SysId routines
-    autoChooser.addOption(
-        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    autoChooser.addOption(
-        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
+    /*autoChooser.addOption(
+            "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+        autoChooser.addOption(
+            "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+        autoChooser.addOption(
+            "Drive SysId (Quasistatic Forward)",
+            drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        autoChooser.addOption(
+            "Drive SysId (Quasistatic Reverse)",
+            drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        autoChooser.addOption(
+            "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        autoChooser.addOption(
+            "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    */
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -180,7 +176,7 @@ public class RobotContainer {
             () -> -RdriveJoystick.getX(),
             () -> true));
 
-    new JoystickButton(LdriveJoystick, 3)
+    new JoystickButton(LdriveJoystick, 4)
         .whileTrue(
             DriveCommands.joystickDrive(
                 drive,
@@ -199,7 +195,7 @@ public class RobotContainer {
                 () -> drive.getPose()));
 
     // Lock to 0° when A button is held
-    new JoystickButton(RdriveJoystick, 3)
+    new JoystickButton(RdriveJoystick, 4)
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -207,7 +203,7 @@ public class RobotContainer {
                 () -> -LdriveJoystick.getX(),
                 () -> Rotation2d.kZero));
     // Lock to 180° when A button is held
-    new JoystickButton(RdriveJoystick, 4)
+    new JoystickButton(RdriveJoystick, 3)
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -215,7 +211,7 @@ public class RobotContainer {
                 () -> -LdriveJoystick.getX(),
                 () -> Rotation2d.k180deg));
     // Switch to X pattern when X button is pressed
-    // new JoystickButton(RdriveJoystick, 5).onTrue(Commands.runOnce(drive::stopWithX, drive));
+    new JoystickButton(LdriveJoystick, 2).onTrue(Commands.runOnce(drive::stopWithX, drive));
     // Reset gyro to 0° when B button is pressed
     new JoystickButton(RdriveJoystick, 5)
         .onTrue(
@@ -234,13 +230,20 @@ public class RobotContainer {
     new JoystickButton(RdriveJoystick, 1)
         .whileTrue(ShootCommands.launchSequence(shootIntake, feeder));
 
-    new JoystickButton(opperatorController.getHID(), 4)
+    new JoystickButton(opperatorController.getHID(), 2)
         .whileTrue(ShootCommands.extake(shootIntake, feeder));
+    new JoystickButton(opperatorController.getHID(), 1)
+        .whileTrue(ShootCommands.overrideLaunch(shootIntake, feeder, 31.5));
+    new JoystickButton(opperatorController.getHID(), 3)
+        .whileTrue(ShootCommands.stopAll(shootIntake, feeder));
+
+    new JoystickButton(opperatorController.getHID(), 4)
+        .whileTrue(ShootCommands.unJam(shootIntake, feeder));
   }
 
   private void climbBindings() {
-    new POVButton(LdriveJoystick, 0).whileTrue(ClimbCommands.simpleClimbCommand(climber));
-    new POVButton(LdriveJoystick, 180).whileTrue(ClimbCommands.simpleDeclimbCommand(climber));
+    // new POVButton(LdriveJoystick, 0).whileTrue(ClimbCommands.simpleClimbCommand(climber));
+    // new POVButton(LdriveJoystick, 180).whileTrue(ClimbCommands.simpleDeclimbCommand(climber));
   }
 
   private void autoNamedCommands() {
@@ -249,6 +252,9 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("intake", ShootCommands.intake(shootIntake, feeder));
     NamedCommands.registerCommand("extake", ShootCommands.extake(shootIntake, feeder));
+
+    /*NamedCommands.registerCommand(
+    "align", DriveCommands.joystickHubDrive(drive, () -> 0, () -> 0, () -> drive.getPose()));*/
   }
 
   /**

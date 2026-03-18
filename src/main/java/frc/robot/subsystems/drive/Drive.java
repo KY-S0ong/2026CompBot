@@ -49,8 +49,6 @@ import frc.robot.LimelightHelpers;
 import frc.robot.Robot;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.LocalADStarAK;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
@@ -407,36 +405,13 @@ public class Drive extends SubsystemBase {
     return desiredAngle + Math.PI;
   }
 
-  public double getMovingShotAngle(Supplier<Pose2d> poseSupplier) {
-    Pose2d hubPose = DriveConstants.getHubPose().toPose2d();
-    Pose2d drivePose = poseSupplier.get();
-    double desiredAngle =
-        StrictMath.atan2(hubPose.getY() - drivePose.getY(), hubPose.getX() - drivePose.getX());
-    desiredAngle -=
-        (1.5
-            * getChassisSpeeds()
-                .fromRobotRelativeSpeeds(getChassisSpeeds(), getRotation())
-                .vyMetersPerSecond
-            / (getShotDistance().in(Meters) * 2.5));
-    return desiredAngle + Math.PI;
-  }
-
   public void updateSmartDashboard() {
-    BigDecimal angleRounded =
-        new BigDecimal(
-            edu.wpi.first.math.util.Units.radiansToDegrees(getShotAngle(() -> getPose())));
-    angleRounded = angleRounded.setScale(4, RoundingMode.HALF_UP);
-    SmartDashboard.putNumber("Shot Angle", angleRounded.doubleValue());
+    double angleRounded =
+        edu.wpi.first.math.util.Units.radiansToDegrees(getShotAngle(() -> getPose()));
+    SmartDashboard.putNumber("Shot Angle", angleRounded);
 
-    BigDecimal movingAngleRounded =
-        new BigDecimal(
-            edu.wpi.first.math.util.Units.radiansToDegrees(getMovingShotAngle(() -> getPose())));
-    movingAngleRounded = movingAngleRounded.setScale(4, RoundingMode.HALF_UP);
-    SmartDashboard.putNumber("Moving Shot Angle", movingAngleRounded.doubleValue());
-
-    BigDecimal distanceRounded = new BigDecimal(getShotDistance().in(Units.Meter));
-    distanceRounded = distanceRounded.setScale(4, RoundingMode.HALF_UP);
-    SmartDashboard.putNumber("Shot Distance", distanceRounded.doubleValue());
+    double distanceRounded = getShotDistance().in(Units.Meter);
+    SmartDashboard.putNumber("Shot Distance", distanceRounded);
 
     field.setRobotPose(getPose());
     SmartDashboard.putData(field);

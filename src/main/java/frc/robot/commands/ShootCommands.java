@@ -16,6 +16,10 @@ public class ShootCommands {
 
   private ShootCommands() {}
 
+  public static Command stopAll(Flywheel flywheel, Feeder feeder) {
+    return Commands.run(() -> flywheel.stopFlyWheel(), flywheel);
+  }
+
   public static Command rampFlyWheel(Flywheel flyWheel, double volts) {
     return Commands.run(() -> flyWheel.rampFlyWheel(volts), flyWheel)
         .handleInterrupt(() -> flyWheel.stopFlyWheel());
@@ -27,21 +31,28 @@ public class ShootCommands {
   }
 
   public static Command feedFly(Feeder feeder) {
-    return Commands.run(() -> feeder.feedShooter(-3), feeder)
+    return Commands.run(() -> feeder.feedShooter(-6), feeder)
         .handleInterrupt(() -> feeder.stopFeeder());
   }
 
   public static ParallelRaceGroup intake(Flywheel flyWheel, Feeder feeder) {
     return new ParallelRaceGroup(
-        rampFlyWheel(flyWheel, 7).handleInterrupt(() -> flyWheel.stopFlyWheel()),
-        Commands.run(() -> feeder.feedShooter(7), feeder)
+        rampFlyWheel(flyWheel, 6).handleInterrupt(() -> flyWheel.stopFlyWheel()),
+        Commands.run(() -> feeder.feedShooter(6), feeder)
             .handleInterrupt(() -> feeder.stopFeeder()));
   }
 
   public static ParallelRaceGroup extake(Flywheel flyWheel, Feeder feeder) {
     return new ParallelRaceGroup(
-        rampFlyWheel(flyWheel, -7).handleInterrupt(() -> flyWheel.stopFlyWheel()),
-        Commands.run(() -> feeder.feedShooter(-7), feeder)
+        rampFlyWheel(flyWheel, -8).handleInterrupt(() -> flyWheel.stopFlyWheel()),
+        Commands.run(() -> feeder.feedShooter(-8), feeder)
+            .handleInterrupt(() -> feeder.stopFeeder()));
+  }
+
+  public static ParallelRaceGroup unJam(Flywheel flyWheel, Feeder feeder) {
+    return new ParallelRaceGroup(
+        rampFlyWheel(flyWheel, 12).handleInterrupt(() -> flyWheel.stopFlyWheel()),
+        Commands.run(() -> feeder.feedShooter(12), feeder)
             .handleInterrupt(() -> feeder.stopFeeder()));
   }
 
@@ -49,20 +60,27 @@ public class ShootCommands {
 
   public static SequentialCommandGroup launchSequence(Flywheel flyWheel, Feeder feeder) {
     return new SequentialCommandGroup(
-        // rampFlyWheel(flyWheel, flyWheel.getTargetVolts()).withTimeout(.35),
-        smartFlyWheel(flyWheel).withTimeout(0.35),
+        // rampFlyWheel(flyWheel, 12).withTimeout(.35),
+        smartFlyWheel(flyWheel).withTimeout(.60),
         feedFly(feeder).alongWith(smartFlyWheel(flyWheel)));
   }
 
-  public static SequentialCommandGroup voltLaunch(Flywheel flyWheel, Feeder feeder, double volts) {
+  public static SequentialCommandGroup overrideLaunch(
+      Flywheel flyWheel, Feeder feeder, double velocity) {
+    return new SequentialCommandGroup(
+        Commands.run(() -> flyWheel.setFlyVelocity(velocity), flyWheel).withTimeout(0.7),
+        feedFly(feeder).alongWith(Commands.run(() -> flyWheel.setFlyVelocity(velocity), flyWheel)));
+  }
+
+  /*public static SequentialCommandGroup voltLaunch(Flywheel flyWheel, Feeder feeder, double volts) {
     return new SequentialCommandGroup(
         rampFlyWheel(flyWheel, volts).withTimeout(.35),
         feedFly(feeder).alongWith(rampFlyWheel(flyWheel, volts)));
-  }
+  }*/
 
   public static SequentialCommandGroup autolaunchSequence(Flywheel flyWheel, Feeder feeder) {
     return new SequentialCommandGroup(
-        smartFlyWheel(flyWheel).withTimeout(0.35),
+        smartFlyWheel(flyWheel).withTimeout(0.60),
         feedFly(feeder).alongWith(smartFlyWheel(flyWheel)));
   }
 }

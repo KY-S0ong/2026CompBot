@@ -38,7 +38,7 @@ public class Climber extends SubsystemBase {
   }
 
   public void positionClimb() {
-    c1Motor.setVoltage(7);
+    c1Motor.setVoltage(5);
     // Add logic to stop the motor when the target position is reached
     if (c1Motor.getEncoder().getPosition() * gearRatio >= 100) { // Example target position
       c1Motor.setVoltage(0);
@@ -46,7 +46,7 @@ public class Climber extends SubsystemBase {
   }
 
   public void positionDeclimb() {
-    c1Motor.setVoltage(-7);
+    c1Motor.setVoltage(-4);
     // Add logic to stop the motor when the target position is reached
     if (c1Motor.getEncoder().getPosition() * gearRatio <= 0) { // Example target position
       c1Motor.setVoltage(0);

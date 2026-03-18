@@ -5,9 +5,15 @@
     "data": {
       "commands": [
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Left Start Agressive"
+            "pathName": "Left Steal"
           }
         },
         {
@@ -23,32 +29,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 5.2
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Left Second Sweep"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "launchSequence"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 5.2
+                  "waitTime": 5.0
                 }
               }
             ]
