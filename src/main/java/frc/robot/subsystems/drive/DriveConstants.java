@@ -54,14 +54,21 @@ public class DriveConstants {
     return pose;
   }
 
-  public static final Pose3d getFerryPose() {
-    Pose3d pose =
+  public static final Pose3d getFerryPose1() {
+    Pose3d pose1 =
         DriverStation.getAlliance().equals(Optional.of(Alliance.Red))
-            ? redFerryPose
-            : blueFerryPose;
-    return pose;
+            ? redFerryPose1
+            : blueFerryPose1;
+    return pose1;
   }
-
+  
+  public static final Pose3d getFerryPose2() {
+    Pose3d pose2 =
+        DriverStation.getAlliance().equals(Optional.of(Alliance.Red))
+            ? redFerryPose2
+            : blueFerryPose2;
+    return pose2;
+  }
   public static final PIDController rotationController = getRotationController();
 
   private static final PIDController getRotationController() {
