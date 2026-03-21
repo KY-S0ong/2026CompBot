@@ -32,6 +32,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Alert;
@@ -48,6 +49,8 @@ import frc.robot.Constants.Mode;
 import frc.robot.LimelightHelpers;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.LocalADStarAK;
+
+import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
@@ -387,6 +390,28 @@ public class Drive extends SubsystemBase {
     return Units.Meters.of(shooterToTargetMeters);
   }
 
+  
+public Distance getFerryShotDistance() {
+    Pose2d drivePose = getPose();
+    Distance finalFerry;
+
+    Translation2d ferry1 = DriveConstants.getFerryPose1().toPose2d().getTranslation();
+    Translation2d ferry2 = DriveConstants.getFerryPose2().toPose2d().getTranslation();
+    
+    
+    double centerToFerry1 = drivePose.getTranslation().getDistance(ferry1);
+    double centerToFerry2 = drivePose.getTranslation().getDistance(ferry2);
+    
+    if(centerToFerry1 < centerToFerry2){
+      SmartDashboard.putNumber("Ferry", 1);
+      return Units.Meters.of(centerToFerry1);
+    }
+    else{
+      SmartDashboard.putNumber("Ferry", 2);
+      return Units.Meters.of(centerToFerry2);
+    }
+  }
+
   public Distance getShotDistance() {
     return getShotDistance(DriveConstants.getHubPose().toPose2d().getTranslation());
   }
@@ -401,4 +426,20 @@ public class Drive extends SubsystemBase {
     // desiredAngle += edu.wpi.first.math.util.Units.degreesToRadians(179.0);
     return desiredAngle;
   }
+
+ public double getFerryPose(Supplier<Pose2d> poseSupplier) {
+    Pose2d drivepose = poseSupplier.get();
+    Pose2d ferryPose;
+    
+    if(SmartDashboard.getNumber("Ferry", 0) == 1){
+      ferryPose = DriveConstants.getFerryPose1().toPose2d();
+    }
+    else ferryPose = DriveConstants.getFerryPose2().toPose2d();
+
+    double desiredAngle =
+        StrictMath.atan2(ferryPose.getY() - drivepose.getY(), ferryPose.getX() - drivepose.getX());
+    // desiredAngle += edu.wpi.first.math.util.Units.degreesToRadians(179.0);
+    return desiredAngle;
+  }
+
 }
