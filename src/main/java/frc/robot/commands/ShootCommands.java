@@ -35,6 +35,11 @@ public class ShootCommands {
         .handleInterrupt(() -> feeder.stopFeeder());
   }
 
+  public static Command smartFeedFly(Feeder feeder, Flywheel flyWheel) {
+    return Commands.run(() -> feeder.smartFeed(-3, flyWheel), feeder)
+        .handleInterrupt(() -> feeder.stopFeeder());
+  }
+
   public static ParallelRaceGroup intake(Flywheel flyWheel, Feeder feeder) {
     return new ParallelRaceGroup(
         rampFlyWheel(flyWheel, 6).handleInterrupt(() -> flyWheel.stopFlyWheel()),
@@ -60,8 +65,9 @@ public class ShootCommands {
 
   public static SequentialCommandGroup launchSequence(Flywheel flyWheel, Feeder feeder) {
     return new SequentialCommandGroup(
-        // rampFlyWheel(flyWheel, 12).withTimeout(.35),
-        smartFlyWheel(flyWheel).withTimeout(.60),
+        // Ramp flywheel until it reaches target velocity, with 1 second timeout
+        smartFlyWheel(flyWheel).until(() -> flyWheel.isAtTargetVelocity()).withTimeout(1.0),
+        // Once ready, feed the shooter while maintaining flywheel speed
         feedFly(feeder).alongWith(smartFlyWheel(flyWheel)));
   }
 
@@ -80,7 +86,9 @@ public class ShootCommands {
 
   public static SequentialCommandGroup autolaunchSequence(Flywheel flyWheel, Feeder feeder) {
     return new SequentialCommandGroup(
-        smartFlyWheel(flyWheel).withTimeout(0.60),
+        // Ramp flywheel until it reaches target velocity, with 1 second timeout
+        smartFlyWheel(flyWheel).until(() -> flyWheel.isAtTargetVelocity()).withTimeout(1.0),
+        // Once ready, feed the shooter while maintaining flywheel speed
         feedFly(feeder).alongWith(smartFlyWheel(flyWheel)));
   }
 }

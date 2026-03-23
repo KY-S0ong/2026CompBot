@@ -253,6 +253,13 @@ public class RobotContainer {
     NamedCommands.registerCommand("intake", ShootCommands.intake(shootIntake, feeder));
     NamedCommands.registerCommand("extake", ShootCommands.extake(shootIntake, feeder));
 
+    // Autonomous drive commands
+    NamedCommands.registerCommand("pointAtHub", DriveCommands.pointAtHubForShoot(drive));
+
+    // Ensure minimum shooting distance (uses trapezoidal motion profiling)
+    NamedCommands.registerCommand(
+        "ensureMinDistance", DriveCommands.ensureMinimumShootingDistance(drive));
+
     /*NamedCommands.registerCommand(
     "align", DriveCommands.joystickHubDrive(drive, () -> 0, () -> 0, () -> drive.getPose()));*/
   }

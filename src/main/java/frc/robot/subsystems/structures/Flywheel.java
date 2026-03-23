@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 
 public class Flywheel extends SubsystemBase {
 
+  // Shooter motors: Kraken X60 brushless motors controlled via TalonFX
   private TalonFX intakeShooter = new TalonFX(51);
   private TalonFX intake2 = new TalonFX(53);
   // private TalonFX feeder = new TalonFX(52);
@@ -32,18 +33,22 @@ public class Flywheel extends SubsystemBase {
 
     // intakeShooterConfiguration.withNeutralMode(NeutralModeValue.Coast);
     // intakeShooter.getConfigurator().apply(intakeShooterConfiguration);
-    // 1.8
+    // PID gains for velocity control
     config.Slot0.kP = 4.5;
+    config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.001;
-    // config.Slot0.kS = 0.01;
-    // config.Slot0.kS = 0.001;
+    config.Slot0.kS = 0.001;
+    // kV = 12V / (6000 RPM / 60) = 12V / 100 RPS = 0.12 V/RPS (Kraken X60 feedforward)
+    config.Slot0.kV = 0.12;
 
     intakeShooter.getConfigurator().apply(config);
 
     config2.Slot0.kP = 4.5;
-    config2.Slot0.kD = .0001;
-    // config2.Slot0.kS = 0.01;
-    // config2.Slot0.kS = .001;
+    config2.Slot0.kI = 0.0;
+    config2.Slot0.kD = .001;
+    config2.Slot0.kS = .001;
+    // kV = 12V / (6000 RPM / 60) = 12V / 100 RPS = 0.12 V/RPS (Kraken X60 feedforward)
+    config2.Slot0.kV = 0.12;
 
     intake2.getConfigurator().apply(config2);
   }
@@ -98,6 +103,20 @@ public class Flywheel extends SubsystemBase {
     velocity *= 1.9;
     intakeShooter.setControl(new VelocityVoltage(velocity));
     intake2.setControl(new VelocityVoltage(velocity));
+  }
+
+  /**
+   * Checks if the flywheel has reached the target velocity within tolerance. Used to determine when
+   * the hopper can begin feeding.
+   *
+   * @return true if actual velocity is within 2 RPS of target velocity
+   */
+  public boolean isAtTargetVelocity() {
+    double currentVelocity =
+        gearRatio * intakeShooter.getVelocity().getValueAsDouble() * ((Math.PI * 2) * 0.1016);
+    double targetVelocity = getTargetVelocity();
+    double tolerance = 2.0; // RPS tolerance
+    return Math.abs(currentVelocity - targetVelocity) < tolerance;
   }
 
   @SuppressWarnings("deprecation")

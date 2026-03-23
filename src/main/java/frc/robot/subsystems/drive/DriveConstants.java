@@ -24,6 +24,12 @@ public class DriveConstants {
 
   public static final Distance shooterSideOffset = Units.Inches.of(6.0);
 
+  public static final double minimumShootingDistance = 1.0; // meters - minimum safe distance to hub
+  // Use fractions of max drive speed/acceleration for smooth backup motion
+  public static final double backupMaxVelocity = maxSpeed * 0.3; // 30% of max speed
+  public static final double backupMaxAcceleration =
+      (maxSpeed * 0.3) / 0.5; // reach 30% speed in 0.5s
+
   public static final Transform2d shooterTransform =
       new Transform2d(Units.Inches.of(0.0), shooterSideOffset, new Rotation2d());
 
@@ -67,4 +73,16 @@ public class DriveConstants {
     controller.enableContinuousInput(-Math.PI, Math.PI);
     return controller;
   }
+
+  // PID constants for autonomous motion profiling
+  public static final double Y_CENTERING_KP = 2.0;
+  public static final double Y_CENTERING_KI = 0.0;
+  public static final double Y_CENTERING_KD = 0.0;
+
+  // Angle control PID constants for profiled controllers
+  public static final double ANGLE_KP = 6.05;
+  public static final double ANGLE_KI = 0.0;
+  public static final double ANGLE_KD = 0.4;
+  public static final double ANGLE_MAX_VELOCITY = 8.0; // rad/s
+  public static final double ANGLE_MAX_ACCELERATION = 20.0; // rad/s^2
 }
