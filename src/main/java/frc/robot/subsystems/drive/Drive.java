@@ -424,8 +424,8 @@ public class Drive extends SubsystemBase {
 
     double desiredAngle =
         StrictMath.atan2(ferryPose.getY() - drivepose.getY(), ferryPose.getX() - drivepose.getX());
-    // desiredAngle += edu.wpi.first.math.util.Units.degreesToRadians(179.0);
-    return desiredAngle;
+
+    return desiredAngle + Math.PI;
   }
 
 

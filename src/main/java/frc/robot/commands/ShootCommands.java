@@ -46,6 +46,11 @@ public class ShootCommands {
         .handleInterrupt(() -> feeder.stopFeeder());
   }
 
+  public static Command smartFeedFly(Feeder feeder, Flywheel flywheel) {
+    return Commands.run(() -> feeder.smartFeed(-6, flywheel), feeder)
+        .handleInterrupt(() -> feeder.stopFeeder());
+  }
+
   public static ParallelRaceGroup intake(Flywheel flyWheel, Intake intake, Feeder feeder) {
     return new ParallelRaceGroup(
         runRollers(intake, 6),
@@ -83,6 +88,15 @@ public class ShootCommands {
         smartFlyWheel(flyWheel).alongWith(smartRunRollers(intake, 10)).withTimeout(2.0),
         feedFly(feeder)
             .alongWith(rampFlyWheel(flyWheel, 5) /*smartFlyWheel(flyWheel)*/)
+            .alongWith(runRollers(intake, 10)));
+  }
+
+  public static SequentialCommandGroup TlaunchSequence(
+      Flywheel flyWheel, Feeder feeder, Intake intake) {
+    return new SequentialCommandGroup(
+        smartFlyWheel(flyWheel).alongWith(smartRunRollers(intake, 10)).withTimeout(0.4),
+        smartFeedFly(feeder, flyWheel)
+            .alongWith(smartFlyWheel(flyWheel))
             .alongWith(runRollers(intake, 10)));
   }
 

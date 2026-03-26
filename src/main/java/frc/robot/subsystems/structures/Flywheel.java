@@ -9,11 +9,10 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.math.BigDecimal;
 
 public class Flywheel extends SubsystemBase {
 
-  private TalonFX intakeShooter = new TalonFX(51);
+  // private TalonFX intakeShooter = new TalonFX(51);
   private TalonFX intake2 = new TalonFX(53);
   // private TalonFX feeder = new TalonFX(52);
   // private MotorOutputConfigs intakeShooterConfiguration = new MotorOutputConfigs();
@@ -33,17 +32,21 @@ public class Flywheel extends SubsystemBase {
     // intakeShooterConfiguration.withNeutralMode(NeutralModeValue.Coast);
     // intakeShooter.getConfigurator().apply(intakeShooterConfiguration);
     // 1.8
-    config.Slot0.kP = 4.5;
-    config.Slot0.kD = 0.001;
-    // config.Slot0.kS = 0.01;
-    // config.Slot0.kS = 0.001;
+    double ks = 0.225;
+    double kv = 0.0;
+    double kp = 0.0;
+    config.Slot0.kP = kp;
+    config.Slot0.kV = kv;
+    config.Slot0.kS = ks;
+    // config.Slot0.kD = 0.001;
 
-    intakeShooter.getConfigurator().apply(config);
+    // intakeShooter.getConfigurator().apply(config);
 
-    config2.Slot0.kP = 4.5;
-    config2.Slot0.kD = .0001;
-    // config2.Slot0.kS = 0.01;
-    // config2.Slot0.kS = .001;
+    config2.Slot0.kP = kp;
+    config2.Slot0.kV = kv;
+    config2.Slot0.kS = ks;
+
+    // config2.Slot0.kD = .0001;
 
     intake2.getConfigurator().apply(config2);
   }
@@ -54,12 +57,12 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void rampFlyWheel(double volts) {
-    intakeShooter.setVoltage(volts);
+    // intakeShooter.setVoltage(volts);
     intake2.setVoltage(volts);
   }
 
   public void stopFlyWheel() {
-    intakeShooter.set(0);
+    // intakeShooter.set(0);
     intake2.set(0);
   }
 
@@ -83,38 +86,32 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void smartFlyWheel() {
-    double flywheelVelocity = getTargetVelocity();
-    flywheelVelocity *= 1.9;
+    double flywheelVelocity = 35.0; // getTargetVelocity();
 
-    ;
-    double topRatio = 44.0 / 56.0;
-    double topMotorVel = flywheelVelocity * topRatio;
-
-    intakeShooter.setControl(new VelocityVoltage(topMotorVel));
+    // intakeShooter.setControl(new VelocityVoltage(flywheelVelocity));
     intake2.setControl(new VelocityVoltage(flywheelVelocity));
   }
 
   public void setFlyVelocity(double velocity) {
-    velocity *= 1.9;
-    intakeShooter.setControl(new VelocityVoltage(velocity));
+    // intakeShooter.setControl(new VelocityVoltage(velocity));
     intake2.setControl(new VelocityVoltage(velocity));
   }
 
-  @SuppressWarnings("deprecation")
-  private void SmartDashboardUpdate() {
-    BigDecimal velocityRounded =
-        new BigDecimal(
-            gearRatio * intakeShooter.getVelocity().getValueAsDouble() * ((Math.PI * 2) * 0.1016));
-    velocityRounded = velocityRounded.setScale(3, BigDecimal.ROUND_HALF_UP);
+  public boolean isAtTargetVelocity() {
+    double currentVelocity =
+        gearRatio * intake2.getVelocity().getValueAsDouble();
+    double targetVelocity = getTargetVelocity();
+    double tolerance = 2.0; // RPS tolerance
+    return Math.abs(currentVelocity - targetVelocity) < tolerance;
+  }
 
-    SmartDashboard.putNumber("FlyWheel RPS", velocityRounded.doubleValue());
+  private void SmartDashboardUpdate() {
+    SmartDashboard.putNumber("FlyWheel RPS", intake2.getVelocity().getValueAsDouble());
 
     /*BigDecimal voltageRounded = new BigDecimal(getTargetVolts());
     voltageRounded = voltageRounded.setScale(3, BigDecimal.ROUND_HALF_UP);
     SmartDashboard.putNumber("Desired Shot Voltage", voltageRounded.doubleValue());*/
 
-    BigDecimal desiredRPSRounded = new BigDecimal(getTargetVelocity());
-    desiredRPSRounded = desiredRPSRounded.setScale(3, BigDecimal.ROUND_HALF_UP);
-    SmartDashboard.putNumber("Desired RPS", desiredRPSRounded.doubleValue());
+    SmartDashboard.putNumber("Desired RPS", getTargetVelocity());
   }
 }
