@@ -40,8 +40,10 @@ public class DriveConstants {
           Units.Inches.of(72.0),
           new Rotation3d());
 
-  public static final Pose3d redFerryPose = new Pose3d(14.3, 4.02, 0, Rotation3d.kZero);
-  public static final Pose3d blueFerryPose = new Pose3d(2.1, 4.02, 0, Rotation3d.kZero);
+   public static final Pose3d redFerryPose1 = new Pose3d(13.23, 5.49, 0, Rotation3d.kZero);
+  public static final Pose3d blueFerryPose1 = new Pose3d(3.15, 2.45, 0, Rotation3d.kZero);
+  public static final Pose3d redFerryPose2 = new Pose3d(13.17, 2.49, 0, Rotation3d.kZero);
+  public static final Pose3d blueFerryPose2 = new Pose3d(3.43, 5.55, 0, Rotation3d.kZero);
 
   public static final Angle epsilonAngleToGoal = Degrees.of(1.0);
 
@@ -52,12 +54,20 @@ public class DriveConstants {
     return pose;
   }
 
-  public static final Pose3d getFerryPose() {
-    Pose3d pose =
+  public static final Pose3d getFerryPose1() {
+    Pose3d pose1 =
         DriverStation.getAlliance().equals(Optional.of(Alliance.Red))
-            ? redFerryPose
-            : blueFerryPose;
-    return pose;
+            ? redFerryPose1
+            : blueFerryPose1;
+    return pose1;
+  }
+  
+  public static final Pose3d getFerryPose2() {
+    Pose3d pose2 =
+        DriverStation.getAlliance().equals(Optional.of(Alliance.Red))
+            ? redFerryPose2
+            : blueFerryPose2;
+    return pose2;
   }
 
   public static final PIDController rotationController = getRotationController();

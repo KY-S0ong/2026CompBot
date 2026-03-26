@@ -29,6 +29,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.structures.Feeder;
 import frc.robot.subsystems.structures.Flywheel;
+import frc.robot.subsystems.structures.Intake;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -47,8 +48,9 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision vision;
   // private VisionSystem visionSystem = new VisionSystem();
-  private Flywheel shootIntake = new Flywheel();
+  private Flywheel flywheel = new Flywheel();
   private Feeder feeder = new Feeder();
+  private Intake intake = new Intake();
   // private Climber climber = new Climber();
 
   // Controller
@@ -135,21 +137,11 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Set up SysId routines
-    /*autoChooser.addOption(
-            "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-        autoChooser.addOption(
-            "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-        autoChooser.addOption(
-            "Drive SysId (Quasistatic Forward)",
-            drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-            "Drive SysId (Quasistatic Reverse)",
-            drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        autoChooser.addOption(
-            "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-            "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    */
+    autoChooser.addOption(
+        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+    autoChooser.addOption(
+        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -184,6 +176,15 @@ public class RobotContainer {
                 () -> -LdriveJoystick.getX(),
                 () -> -RdriveJoystick.getX(),
                 () -> false));
+
+    // Feeding Angle Drive when RB is held
+    new JoystickButton(LdriveJoystick, 3)
+        .whileTrue(
+            DriveCommands.joystickFeedDrive(
+                drive,
+                () -> -LdriveJoystick.getY(),
+                () -> -LdriveJoystick.getX(),
+                () -> drive.getPose()));
 
     // Hub-relative drive when RB is held
     new JoystickButton(RdriveJoystick, 2)
@@ -224,21 +225,22 @@ public class RobotContainer {
   }
 
   private void shootBindings() {
-    // new JoystickButton(LdriveJoystick, 1).whileTrue(ShootCommands.rampFlyWheel(shootIntake,
+    // new JoystickButton(LdriveJoystick, 1).whileTrue(ShootCommands.rampFlyWheel(flywheel,
     // 6.5));
-    new JoystickButton(LdriveJoystick, 1).whileTrue(ShootCommands.intake(shootIntake, feeder));
-    new JoystickButton(RdriveJoystick, 1)
-        .whileTrue(ShootCommands.launchSequence(shootIntake, feeder));
+    new JoystickButton(LdriveJoystick, 1)
+        .whileTrue(ShootCommands.smartIntake(flywheel, intake, feeder));
+    new JoystickButton(RdriveJoystick, 1).whileTrue(ShootCommands.testPID(flywheel));
+    // .whileTrue(ShootCommands.launchSequence(flywheel, feeder, intake));
 
     new JoystickButton(opperatorController.getHID(), 2)
-        .whileTrue(ShootCommands.extake(shootIntake, feeder));
+        .whileTrue(ShootCommands.extake(intake, feeder));
     new JoystickButton(opperatorController.getHID(), 1)
-        .whileTrue(ShootCommands.overrideLaunch(shootIntake, feeder, 31.5));
+        .whileTrue(ShootCommands.overrideLaunch(flywheel, feeder, intake, 31.5));
     new JoystickButton(opperatorController.getHID(), 3)
-        .whileTrue(ShootCommands.stopAll(shootIntake, feeder));
+        .whileTrue(ShootCommands.stopAll(flywheel, feeder));
 
     new JoystickButton(opperatorController.getHID(), 4)
-        .whileTrue(ShootCommands.unJam(shootIntake, feeder));
+        .whileTrue(ShootCommands.unJam(flywheel, feeder, intake));
   }
 
   private void climbBindings() {
@@ -248,13 +250,11 @@ public class RobotContainer {
 
   private void autoNamedCommands() {
     NamedCommands.registerCommand(
-        "launchSequence", ShootCommands.autolaunchSequence(shootIntake, feeder));
+        "launchSequence", ShootCommands.autolaunchSequence(flywheel, feeder, intake));
 
-    NamedCommands.registerCommand("intake", ShootCommands.intake(shootIntake, feeder));
-    NamedCommands.registerCommand("extake", ShootCommands.extake(shootIntake, feeder));
+    NamedCommands.registerCommand("intake", ShootCommands.smartIntake(flywheel, intake, feeder));
+    NamedCommands.registerCommand("extake", ShootCommands.extake(intake, feeder));
 
-    /*NamedCommands.registerCommand(
-    "align", DriveCommands.joystickHubDrive(drive, () -> 0, () -> 0, () -> drive.getPose()));*/
   }
 
   /**

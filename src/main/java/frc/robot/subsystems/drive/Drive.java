@@ -45,7 +45,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
-import frc.robot.LimelightHelpers;
 import frc.robot.Robot;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.LocalADStarAK;
@@ -122,7 +121,7 @@ public class Drive extends SubsystemBase {
     // Usage reporting for swerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
 
-    LimelightHelpers.setCameraPose_RobotSpace("dalight", 0, 0, 0, 0, 0, 0);
+    // LimelightHelpers.setCameraPose_RobotSpace("dalight", 0, 0, 0, 0, 0, 0);
 
     // Start odometry thread
     PhoenixOdometryThread.getInstance().start();
@@ -404,6 +403,31 @@ public class Drive extends SubsystemBase {
 
     return desiredAngle + Math.PI;
   }
+
+   public double getFerryAngle(Supplier<Pose2d> poseSupplier) {
+    Pose2d drivepose = poseSupplier.get();
+    Pose2d ferryPose;
+
+    Translation2d ferry1 = DriveConstants.getFerryPose1().toPose2d().getTranslation();
+    Translation2d ferry2 = DriveConstants.getFerryPose2().toPose2d().getTranslation();
+    
+    
+    double centerToFerry1 = drivepose.getTranslation().getDistance(ferry1);
+    double centerToFerry2 = drivepose.getTranslation().getDistance(ferry2);
+    
+    if(centerToFerry1 < centerToFerry2){
+      ferryPose = DriveConstants.getFerryPose1().toPose2d();
+    }
+    else{
+      ferryPose = DriveConstants.getFerryPose2().toPose2d();
+    }
+
+    double desiredAngle =
+        StrictMath.atan2(ferryPose.getY() - drivepose.getY(), ferryPose.getX() - drivepose.getX());
+    // desiredAngle += edu.wpi.first.math.util.Units.degreesToRadians(179.0);
+    return desiredAngle;
+  }
+
 
   public void updateSmartDashboard() {
     double angleRounded =
