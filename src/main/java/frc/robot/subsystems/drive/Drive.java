@@ -404,21 +404,19 @@ public class Drive extends SubsystemBase {
     return desiredAngle + Math.PI;
   }
 
-   public double getFerryAngle(Supplier<Pose2d> poseSupplier) {
+  public double getFerryAngle(Supplier<Pose2d> poseSupplier) {
     Pose2d drivepose = poseSupplier.get();
     Pose2d ferryPose;
 
     Translation2d ferry1 = DriveConstants.getFerryPose1().toPose2d().getTranslation();
     Translation2d ferry2 = DriveConstants.getFerryPose2().toPose2d().getTranslation();
-    
-    
+
     double centerToFerry1 = drivepose.getTranslation().getDistance(ferry1);
     double centerToFerry2 = drivepose.getTranslation().getDistance(ferry2);
-    
-    if(centerToFerry1 < centerToFerry2){
+
+    if (centerToFerry1 < centerToFerry2) {
       ferryPose = DriveConstants.getFerryPose1().toPose2d();
-    }
-    else{
+    } else {
       ferryPose = DriveConstants.getFerryPose2().toPose2d();
     }
 
@@ -427,7 +425,6 @@ public class Drive extends SubsystemBase {
 
     return desiredAngle + Math.PI;
   }
-
 
   public void updateSmartDashboard() {
     double angleRounded =

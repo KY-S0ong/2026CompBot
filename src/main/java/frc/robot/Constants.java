@@ -23,10 +23,21 @@ public final class Constants {
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
   public static final String limeLight = "limelight";
-  public static final String pi1Pho1 = "photonvision";
+  public static final String c4Name = "ShootCamL";
+  public static final String c3Name = "ShootCamBR";
+  public static final String c2Name = "Intake Cam";
 
-  public static Transform3d lBCam =
-      new Transform3d(-0.23, 0.31, 0.28, new Rotation3d(3.4033, 6.021, 0.0));
+  /* Back of the robot Shoot Cam L */
+  public static Transform3d c4 =
+      new Transform3d(-0.241, -0.285, 0.279, new Rotation3d(0, -2.845, -3.107));
+
+  /* Shoot Cam BR */
+  public static Transform3d c3 =
+      new Transform3d(0.318, 0.286, 0.267, new Rotation3d(0, -0.279, -0.052));
+
+  /* Front Intake Cam */
+  public static Transform3d c2 =
+      new Transform3d(0.229, -0.254, 0.343, new Rotation3d(0, 1.5707, -3.14159));
 
   public static final Pose3d redHubPose =
       new Pose3d(
@@ -40,9 +51,6 @@ public final class Constants {
           Units.Inches.of(158.32),
           Units.Inches.of(72.0),
           new Rotation3d());
-
-  public static final Pose3d redFerryPose = new Pose3d(14.3, 4.02, 0, Rotation3d.kZero);
-  public static final Pose3d blueFerryPose = new Pose3d(2.1, 4.02, 0, Rotation3d.kZero);
 
   public static enum Mode {
     /** Running on a real robot. */

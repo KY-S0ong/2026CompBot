@@ -40,7 +40,7 @@ public class DriveConstants {
           Units.Inches.of(72.0),
           new Rotation3d());
 
-   public static final Pose3d redFerryPose1 = new Pose3d(13.23, 5.49, 0, Rotation3d.kZero);
+  public static final Pose3d redFerryPose1 = new Pose3d(13.23, 5.49, 0, Rotation3d.kZero);
   public static final Pose3d blueFerryPose1 = new Pose3d(3.15, 2.45, 0, Rotation3d.kZero);
   public static final Pose3d redFerryPose2 = new Pose3d(13.17, 2.49, 0, Rotation3d.kZero);
   public static final Pose3d blueFerryPose2 = new Pose3d(3.43, 5.55, 0, Rotation3d.kZero);
@@ -61,7 +61,7 @@ public class DriveConstants {
             : blueFerryPose1;
     return pose1;
   }
-  
+
   public static final Pose3d getFerryPose2() {
     Pose3d pose2 =
         DriverStation.getAlliance().equals(Optional.of(Alliance.Red))

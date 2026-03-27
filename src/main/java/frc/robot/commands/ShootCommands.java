@@ -38,7 +38,7 @@ public class ShootCommands {
 
   public static SequentialCommandGroup smartRunRollers(Intake intake, double volts) {
     return new SequentialCommandGroup(
-        runRollers(intake, -4.5).withTimeout(.2), runRollers(intake, volts));
+        runRollers(intake, -4.5).withTimeout(0.05), runRollers(intake, volts));
   }
 
   public static Command feedFly(Feeder feeder) {
@@ -53,15 +53,16 @@ public class ShootCommands {
 
   public static ParallelRaceGroup intake(Flywheel flyWheel, Intake intake, Feeder feeder) {
     return new ParallelRaceGroup(
-        runRollers(intake, 6),
-        Commands.run(() -> feeder.feedShooter(9), feeder)
-            .handleInterrupt(() -> feeder.stopFeeder()));
+        runRollers(intake, 6.25),
+        Commands.run(() -> feeder.feedShooter(10.5), feeder)
+            .handleInterrupt(() -> feeder.stopFeeder()),
+        rampFlyWheel(flyWheel, 0.0));
   }
 
   public static SequentialCommandGroup smartIntake(
       Flywheel flywheel, Intake intake, Feeder feeder) {
     return new SequentialCommandGroup(
-        extake(intake, feeder).withTimeout(0.05), intake(flywheel, intake, feeder));
+        runRollers(intake, -6.25).withTimeout(0.05), intake(flywheel, intake, feeder));
   }
 
   public static ParallelRaceGroup extake(Intake intake, Feeder feeder) {
@@ -87,7 +88,7 @@ public class ShootCommands {
         // rampFlyWheel(flyWheel, 5).withTimeout(1.0),
         smartFlyWheel(flyWheel).alongWith(smartRunRollers(intake, 10)).withTimeout(2.0),
         feedFly(feeder)
-            .alongWith(rampFlyWheel(flyWheel, 5) /*smartFlyWheel(flyWheel)*/)
+            .alongWith(smartFlyWheel(flyWheel) /*smartFlyWheel(flyWheel)*/)
             .alongWith(runRollers(intake, 10)));
   }
 
@@ -104,8 +105,8 @@ public class ShootCommands {
       Flywheel flyWheel, Feeder feeder, Intake intake, double velocity) {
     return new SequentialCommandGroup(
         Commands.run(() -> flyWheel.setFlyVelocity(velocity), flyWheel)
-            .alongWith(smartRunRollers(intake, 10))
-            .withTimeout(2.0),
+            .alongWith(smartRunRollers(intake, 7))
+            .withTimeout(0.50),
         feedFly(feeder)
             .alongWith(Commands.run(() -> flyWheel.setFlyVelocity(velocity), flyWheel))
             .alongWith(runRollers(intake, velocity)));

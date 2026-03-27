@@ -118,17 +118,6 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "hopper",
-      "waypointRelativePos": 0.627737226277374,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "hopper"
-        }
-      }
-    },
-    {
       "name": "intake",
       "waypointRelativePos": 0.7503649635036562,
       "endWaypointRelativePos": 3.7420924574209167,

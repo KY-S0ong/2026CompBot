@@ -32,9 +32,9 @@ public class Flywheel extends SubsystemBase {
     // intakeShooterConfiguration.withNeutralMode(NeutralModeValue.Coast);
     // intakeShooter.getConfigurator().apply(intakeShooterConfiguration);
     // 1.8
-    double ks = 0.225;
-    double kv = 0.0;
-    double kp = 0.0;
+    double ks = 0.4;
+    double kv = 0.12;
+    double kp = 0.1; // 0.05
     config.Slot0.kP = kp;
     config.Slot0.kV = kv;
     config.Slot0.kS = ks;
@@ -86,7 +86,7 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void smartFlyWheel() {
-    double flywheelVelocity = 35.0; // getTargetVelocity();
+    double flywheelVelocity = 60.0; // getTargetVelocity();
 
     // intakeShooter.setControl(new VelocityVoltage(flywheelVelocity));
     intake2.setControl(new VelocityVoltage(flywheelVelocity));
@@ -98,8 +98,7 @@ public class Flywheel extends SubsystemBase {
   }
 
   public boolean isAtTargetVelocity() {
-    double currentVelocity =
-        gearRatio * intake2.getVelocity().getValueAsDouble();
+    double currentVelocity = gearRatio * intake2.getVelocity().getValueAsDouble();
     double targetVelocity = getTargetVelocity();
     double tolerance = 2.0; // RPS tolerance
     return Math.abs(currentVelocity - targetVelocity) < tolerance;

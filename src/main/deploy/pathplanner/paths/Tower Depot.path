@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9361111111053133,
-        "y": 5.155611111110709
+        "x": 2.318216833095578,
+        "y": 4.960114122681883
       },
       "isLocked": false,
       "linkedName": "Tower Shot"
     },
     {
       "anchor": {
-        "x": 0.4291726105563479,
-        "y": 5.969329529243937
+        "x": 0.5844365192582024,
+        "y": 6.085777460770328
       },
       "prevControl": {
-        "x": 1.6437777777719798,
-        "y": 8.156899999999599
+        "x": 0.4162339514978599,
+        "y": 4.882482168330956
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,8 +30,12 @@
   ],
   "rotationTargets": [
     {
+      "waypointRelativePos": 0.7334754797441262,
+      "rotationDegrees": 130.24839877084938
+    },
+    {
       "waypointRelativePos": 0.9370409233997882,
-      "rotationDegrees": -139.22805849257153
+      "rotationDegrees": 105.15521842286176
     }
   ],
   "constraintZones": [
@@ -73,7 +77,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 105.46121774044191
   },
   "reversed": false,
   "folder": "Center",

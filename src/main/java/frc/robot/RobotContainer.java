@@ -83,7 +83,9 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOLimelight(Constants.limeLight, drive::getRotation),
-                new VisionIOPhotonVision(Constants.pi1Pho1, Constants.lBCam));
+                new VisionIOPhotonVision(Constants.c4Name, Constants.c4),
+                new VisionIOPhotonVision(Constants.c2Name, Constants.c2),
+                new VisionIOPhotonVision(Constants.c3Name, Constants.c3));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -117,7 +119,7 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOLimelight(Constants.limeLight, drive::getRotation),
-                new VisionIOPhotonVisionSim(Constants.pi1Pho1, Constants.lBCam, drive::getPose));
+                new VisionIOPhotonVisionSim(Constants.c4Name, Constants.c4, drive::getPose));
         break;
 
       default:
@@ -229,13 +231,14 @@ public class RobotContainer {
     // 6.5));
     new JoystickButton(LdriveJoystick, 1)
         .whileTrue(ShootCommands.smartIntake(flywheel, intake, feeder));
-    new JoystickButton(RdriveJoystick, 1).whileTrue(ShootCommands.testPID(flywheel));
+    new JoystickButton(RdriveJoystick, 1)
+        .whileTrue(ShootCommands.TlaunchSequence(flywheel, feeder, intake));
     // .whileTrue(ShootCommands.launchSequence(flywheel, feeder, intake));
 
     new JoystickButton(opperatorController.getHID(), 2)
         .whileTrue(ShootCommands.extake(intake, feeder));
     new JoystickButton(opperatorController.getHID(), 1)
-        .whileTrue(ShootCommands.overrideLaunch(flywheel, feeder, intake, 31.5));
+        .whileTrue(ShootCommands.overrideLaunch(flywheel, feeder, intake, 55.0));
     new JoystickButton(opperatorController.getHID(), 3)
         .whileTrue(ShootCommands.stopAll(flywheel, feeder));
 
@@ -254,7 +257,6 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("intake", ShootCommands.smartIntake(flywheel, intake, feeder));
     NamedCommands.registerCommand("extake", ShootCommands.extake(intake, feeder));
-
   }
 
   /**

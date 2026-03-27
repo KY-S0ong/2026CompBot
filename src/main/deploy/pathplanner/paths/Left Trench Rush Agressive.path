@@ -41,7 +41,7 @@
       },
       "nextControl": {
         "x": 8.633669200338346,
-        "y": 4.700997306741733
+        "y": 4.7009973067417326
       },
       "isLocked": false,
       "linkedName": null
@@ -143,12 +143,6 @@
           "name": "intake"
         }
       }
-    },
-    {
-      "name": "hopper",
-      "waypointRelativePos": 0.624817518248173,
-      "endWaypointRelativePos": null,
-      "command": null
     }
   ],
   "globalConstraints": {

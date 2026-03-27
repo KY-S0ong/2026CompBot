@@ -7,11 +7,10 @@ package frc.robot.subsystems.structures;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
-  
+
   private TalonFX intake = new TalonFX(51);
   private MotorOutputConfigs config = new MotorOutputConfigs();
 
@@ -28,7 +27,7 @@ public class Intake extends SubsystemBase {
   public void runIntake(double volts) {
     intake.setVoltage(volts);
   }
-  
+
   public void stopIntake() {
     intake.set(0);
   }
