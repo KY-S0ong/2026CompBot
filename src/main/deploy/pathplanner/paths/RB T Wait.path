@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5560777777777783,
-        "y": 2.2030444444444446
+        "x": 3.5991440798858774,
+        "y": 1.7513266761768898
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.43125297331915147,
-        "y": 1.3933212752680506
+        "x": 2.589928673323822,
+        "y": 1.9065905848787448
       },
       "isLocked": false,
-      "linkedName": "Center Shot"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.484188888888889,
-        "y": 0.5562333333333322
+        "x": 2.809885877318117,
+        "y": 0.5739087018544944
       },
       "prevControl": {
-        "x": 0.6617286650502298,
-        "y": 1.3437758589207554
+        "x": 1.5207614122681878,
+        "y": 0.9167831669044226
+      },
+      "nextControl": {
+        "x": 4.0990103423680475,
+        "y": 0.23103423680456608
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.998288159771754,
+        "y": 0.5609700427960058
+      },
+      "prevControl": {
+        "x": 6.998288159771754,
+        "y": 0.5609700427960053
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Outpost"
+      "linkedName": "Right Wait"
     }
   ],
   "rotationTargets": [],
@@ -45,10 +61,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Center",
+  "folder": "Right",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -149.26451229807995
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

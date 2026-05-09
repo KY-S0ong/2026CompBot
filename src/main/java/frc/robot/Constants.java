@@ -26,18 +26,20 @@ public final class Constants {
   public static final String c4Name = "ShootCamL";
   public static final String c3Name = "ShootCamBR";
   public static final String c2Name = "Intake Cam";
+  public static final String c1Name = "Insert";
 
-  /* Back of the robot Shoot Cam L */
-  public static Transform3d c4 =
-      new Transform3d(-0.241, -0.285, 0.279, new Rotation3d(0, -2.845, -3.107));
+  /* Back of the robot  Cam L */
+  public static Transform3d c4 = new Transform3d(0.23, 0.37, 0.36, new Rotation3d(0, 0, 1.5707));
 
-  /* Shoot Cam BR */
-  public static Transform3d c3 =
-      new Transform3d(0.318, 0.286, 0.267, new Rotation3d(0, -0.279, -0.052));
+  /* Cam BR */
+  public static Transform3d c3 = new Transform3d(-0.24, 0.4, 0.36, new Rotation3d(0, 0, -1.5));
 
   /* Front Intake Cam */
-  public static Transform3d c2 =
-      new Transform3d(0.229, -0.254, 0.343, new Rotation3d(0, 1.5707, -3.14159));
+  public static Transform3d c2 = new Transform3d(0.254, -0.33, 0.394, new Rotation3d(4.7124, 0, 0));
+
+  /* Insert Cam */
+  public static Transform3d c1 =
+      new Transform3d(-0.267, -0.33, 0.387, new Rotation3d(4.7124, 3.1416, 0));
 
   public static final Pose3d redHubPose =
       new Pose3d(

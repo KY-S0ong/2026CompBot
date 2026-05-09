@@ -33,7 +33,6 @@ import frc.robot.subsystems.structures.Intake;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -82,10 +81,11 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOLimelight(Constants.limeLight, drive::getRotation),
+                new VisionIOLimelight(Constants.limeLight, drive::getRotation) /*,
                 new VisionIOPhotonVision(Constants.c4Name, Constants.c4),
                 new VisionIOPhotonVision(Constants.c2Name, Constants.c2),
-                new VisionIOPhotonVision(Constants.c3Name, Constants.c3));
+                new VisionIOPhotonVision(Constants.c3Name, Constants.c3),
+                new VisionIOPhotonVision(Constants.c1Name, Constants.c1)*/);
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -118,8 +118,8 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOLimelight(Constants.limeLight, drive::getRotation),
-                new VisionIOPhotonVisionSim(Constants.c4Name, Constants.c4, drive::getPose));
+                new VisionIOPhotonVisionSim(Constants.c4Name, Constants.c4, drive::getPose),
+                new VisionIOPhotonVisionSim(Constants.c3Name, Constants.c3, drive::getPose));
         break;
 
       default:
@@ -231,18 +231,17 @@ public class RobotContainer {
     // 6.5));
     new JoystickButton(LdriveJoystick, 1)
         .whileTrue(ShootCommands.smartIntake(flywheel, intake, feeder));
-    new JoystickButton(RdriveJoystick, 1)
-        .whileTrue(ShootCommands.TlaunchSequence(flywheel, feeder, intake));
-    // .whileTrue(ShootCommands.launchSequence(flywheel, feeder, intake));
+    new JoystickButton(RdriveJoystick, 1) // .whileTrue(ShootCommands.testPID(flywheel));
+        .whileTrue(ShootCommands.launchSequence(flywheel, feeder, intake));
 
-    new JoystickButton(opperatorController.getHID(), 2)
+    new JoystickButton(opperatorController.getHID(), 5)
         .whileTrue(ShootCommands.extake(intake, feeder));
-    new JoystickButton(opperatorController.getHID(), 1)
+    new JoystickButton(opperatorController.getHID(), 6)
         .whileTrue(ShootCommands.overrideLaunch(flywheel, feeder, intake, 55.0));
     new JoystickButton(opperatorController.getHID(), 3)
         .whileTrue(ShootCommands.stopAll(flywheel, feeder));
 
-    new JoystickButton(opperatorController.getHID(), 4)
+    new JoystickButton(opperatorController.getHID(), 2)
         .whileTrue(ShootCommands.unJam(flywheel, feeder, intake));
   }
 
@@ -253,10 +252,12 @@ public class RobotContainer {
 
   private void autoNamedCommands() {
     NamedCommands.registerCommand(
-        "launchSequence", ShootCommands.autolaunchSequence(flywheel, feeder, intake));
+        "launchSequence", ShootCommands.launchSequence(flywheel, feeder, intake));
 
     NamedCommands.registerCommand("intake", ShootCommands.smartIntake(flywheel, intake, feeder));
     NamedCommands.registerCommand("extake", ShootCommands.extake(intake, feeder));
+    NamedCommands.registerCommand(
+        "passShot", ShootCommands.TlaunchSequence(flywheel, feeder, intake));
   }
 
   /**

@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
 
-  private TalonFX intake = new TalonFX(51);
+  private TalonFX intake = new TalonFX(41);
   private MotorOutputConfigs config = new MotorOutputConfigs();
 
   public Intake() {

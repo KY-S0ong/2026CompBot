@@ -26,8 +26,8 @@ public class ShootCommands {
         .handleInterrupt(() -> flyWheel.stopFlyWheel());
   }
 
-  public static Command smartFlyWheel(Flywheel flyWheel) {
-    return Commands.run(() -> flyWheel.smartFlyWheel(), flyWheel)
+  public static Command smartFlyWheel(Flywheel flyWheel, double v) {
+    return Commands.run(() -> flyWheel.smartFlyWheel(v), flyWheel)
         .handleInterrupt(() -> flyWheel.stopFlyWheel());
   }
 
@@ -42,7 +42,7 @@ public class ShootCommands {
   }
 
   public static Command feedFly(Feeder feeder) {
-    return Commands.run(() -> feeder.feedShooter(-6), feeder)
+    return Commands.run(() -> feeder.feedShooter(-9.5), feeder)
         .handleInterrupt(() -> feeder.stopFeeder());
   }
 
@@ -53,8 +53,8 @@ public class ShootCommands {
 
   public static ParallelRaceGroup intake(Flywheel flyWheel, Intake intake, Feeder feeder) {
     return new ParallelRaceGroup(
-        runRollers(intake, 6.25),
-        Commands.run(() -> feeder.feedShooter(10.5), feeder)
+        runRollers(intake, 10.0),
+        Commands.run(() -> feeder.feedShooter(10.85), feeder)
             .handleInterrupt(() -> feeder.stopFeeder()),
         rampFlyWheel(flyWheel, 0.0));
   }
@@ -62,13 +62,13 @@ public class ShootCommands {
   public static SequentialCommandGroup smartIntake(
       Flywheel flywheel, Intake intake, Feeder feeder) {
     return new SequentialCommandGroup(
-        runRollers(intake, -6.25).withTimeout(0.05), intake(flywheel, intake, feeder));
+        runRollers(intake, -10.0).withTimeout(0.075), intake(flywheel, intake, feeder));
   }
 
   public static ParallelRaceGroup extake(Intake intake, Feeder feeder) {
     return new ParallelRaceGroup(
-        runRollers(intake, -8).handleInterrupt(() -> intake.stopIntake()),
-        Commands.run(() -> feeder.feedShooter(-9), feeder)
+        runRollers(intake, -11).handleInterrupt(() -> intake.stopIntake()),
+        Commands.run(() -> feeder.feedShooter(-11), feeder)
             .handleInterrupt(() -> feeder.stopFeeder()));
   }
 
@@ -86,19 +86,17 @@ public class ShootCommands {
       Flywheel flyWheel, Feeder feeder, Intake intake) {
     return new SequentialCommandGroup(
         // rampFlyWheel(flyWheel, 5).withTimeout(1.0),
-        smartFlyWheel(flyWheel).alongWith(smartRunRollers(intake, 10)).withTimeout(2.0),
+        smartFlyWheel(flyWheel, 0).alongWith(smartRunRollers(intake, 10)).withTimeout(0.65),
         feedFly(feeder)
-            .alongWith(smartFlyWheel(flyWheel) /*smartFlyWheel(flyWheel)*/)
+            .alongWith(smartFlyWheel(flyWheel, 0) /*smartFlyWheel(flyWheel)*/)
             .alongWith(runRollers(intake, 10)));
   }
 
   public static SequentialCommandGroup TlaunchSequence(
       Flywheel flyWheel, Feeder feeder, Intake intake) {
     return new SequentialCommandGroup(
-        smartFlyWheel(flyWheel).alongWith(smartRunRollers(intake, 10)).withTimeout(0.4),
-        smartFeedFly(feeder, flyWheel)
-            .alongWith(smartFlyWheel(flyWheel))
-            .alongWith(runRollers(intake, 10)));
+        smartFlyWheel(flyWheel, 3.5).alongWith(smartRunRollers(intake, 10)).withTimeout(0.7),
+        feedFly(feeder).alongWith(smartFlyWheel(flyWheel, 3.5)).alongWith(runRollers(intake, 10)));
   }
 
   public static SequentialCommandGroup overrideLaunch(
@@ -119,13 +117,13 @@ public class ShootCommands {
   }*/
 
   public static Command testPID(Flywheel flywheel) {
-    return smartFlyWheel(flywheel);
+    return smartFlyWheel(flywheel, 0);
   }
 
   public static SequentialCommandGroup autolaunchSequence(
       Flywheel flyWheel, Feeder feeder, Intake intake) {
     return new SequentialCommandGroup(
-        smartFlyWheel(flyWheel).alongWith(smartRunRollers(intake, 10)).withTimeout(1.25),
-        feedFly(feeder).alongWith(smartFlyWheel(flyWheel)).alongWith(runRollers(intake, 10)));
+        smartFlyWheel(flyWheel, 0).alongWith(smartRunRollers(intake, 10)).withTimeout(0.85),
+        feedFly(feeder).alongWith(smartFlyWheel(flyWheel, 0)).alongWith(runRollers(intake, 10)));
   }
 }

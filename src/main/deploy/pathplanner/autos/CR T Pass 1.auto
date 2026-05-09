@@ -5,25 +5,19 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Center Shot Tower"
-          }
-        },
-        {
           "type": "race",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "launchSequence"
+                  "name": "extake"
                 }
               },
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 5.0
+                  "waitTime": 0.25
                 }
               }
             ]
@@ -32,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Tower Depot"
+            "pathName": "CR Prep"
           }
         },
         {
@@ -40,15 +34,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "race",
                 "data": {
-                  "name": "intake"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "launchSequence"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 2.0
+                  "waitTime": 2.5
                 }
               }
             ]
@@ -57,26 +58,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Depot Shot"
+            "pathName": "Right Pass 1"
           }
         },
         {
-          "type": "race",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "launchSequence"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 6.0
-                }
-              }
-            ]
+            "name": "launchSequence"
           }
         }
       ]

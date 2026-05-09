@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.318216833095578,
-        "y": 4.960114122681883
+        "x": 2.4864194008559197,
+        "y": 5.89169757489301
       },
       "isLocked": false,
       "linkedName": "Tower Shot"
     },
     {
       "anchor": {
-        "x": 0.5844365192582024,
-        "y": 6.085777460770328
+        "x": 0.6232524964336661,
+        "y": 6.111654778887304
       },
       "prevControl": {
-        "x": 0.4162339514978599,
-        "y": 4.882482168330956
+        "x": 0.24803138373751737,
+        "y": 4.287303851640513
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,29 +30,11 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.7334754797441262,
-      "rotationDegrees": 130.24839877084938
-    },
-    {
-      "waypointRelativePos": 0.9370409233997882,
-      "rotationDegrees": 105.15521842286176
+      "waypointRelativePos": 0.7724425887265102,
+      "rotationDegrees": 138.37118776768466
     }
   ],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.7081403044341535,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 1.25,
-        "maxAcceleration": 6.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
@@ -68,16 +50,16 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 6.5,
-    "maxAcceleration": 5.7,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.5,
+    "maxAngularVelocity": 360.0,
+    "maxAngularAcceleration": 240.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 105.46121774044191
+    "rotation": 112.61986494804039
   },
   "reversed": false,
   "folder": "Center",

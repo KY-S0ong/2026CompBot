@@ -5,9 +5,28 @@
     "data": {
       "commands": [
         {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "extake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.1
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Left Trench Rush Passive"
+            "pathName": "CL Prep"
           }
         },
         {
@@ -23,7 +42,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 4.0
+                  "waitTime": 2.65
                 }
               }
             ]
@@ -32,13 +51,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left Second Sweep"
+            "pathName": "Left Steal Pass 1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "launchSequence"
+            "name": "passShot"
           }
         }
       ]
